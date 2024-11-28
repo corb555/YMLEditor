@@ -48,7 +48,7 @@ class ItemWidget(QWidget):
         key (str): Key for the field in the config data.
         error_style (str):  style for indicating an error.
         rgx (str): Regex pattern for validating text fields. Set in options parameter.
-        _data_category (type) : data type of the item
+        _data_type (type) : data type of the item
 
     **Methods**:
     """
@@ -82,7 +82,7 @@ class ItemWidget(QWidget):
         self.key = key
         self.config = config
         self._is_valid = False
-        self._data_category = None
+        self._data_type = None
         self.verbose = verbose
 
         self._create_widget(widget_type, initial_value, options, width, text_edit_height)
@@ -146,12 +146,9 @@ class ItemWidget(QWidget):
                 if key:
                     val = self.config.get(key)
                     if val:
-                        if not self._data_category:
-                            self._data_category = data_type(val)
+                        if not self._data_type:
+                            self._data_type = data_type(val)
                         self.set_text(self.widget, val)
-                    else:
-                        if self.verbose > 0:
-                            print(f"Warning: Widget key '{key}' not found.")
         except Exception as e:
             key = key or "None"
             val = val or "None"
@@ -160,7 +157,7 @@ class ItemWidget(QWidget):
 
     def _on_widget_changed(self, widget):
         """
-        Handle changes to the widget's value:  validate text. If valid,
+        Handle changes to the widget's value: validate text. If valid,
         update the config data. Set style appropriately.
 
         Args:
@@ -168,13 +165,40 @@ class ItemWidget(QWidget):
         """
         key = widget.objectName()
         text = get_text(widget)
-        error_flag, data_value = parse_text(text, self._data_category, self.rgx)
+
+        # Ensure text is valid and properly formatted
+        if isinstance(text, str) and self._data_type:
+            text = text.strip()  # Remove surrounding whitespace
+            #try:
+            if True:
+                if self._data_type == dict:
+                    # Add enclosing braces if not present and content is non-empty
+                    if text and (not text.startswith("{") or not text.endswith("}")):
+                        text = f"{{{text}}}"
+                elif self._data_type == list:
+                    # Add enclosing brackets if not present and content is non-empty
+                    if text and (not text.startswith("[") or not text.endswith("]")):
+                        text = f"[{text}]"
+            """ 
+            except Exception as e:
+                self.set_error_style(widget)
+                print(f"Error formatting text for widget '{key}': {e}")
+                return
+            """
+
+        # Validate the text and parse it
+        error_flag, data_value = parse_text(text, self._data_type, self.rgx)
         self._is_valid = not error_flag
 
+        # Update config and apply styles based on validation
         if self._is_valid:
-            self.config.set(key, data_value)
-            self.set_normal_style(widget)
-            self.callback(key, text)
+            try:
+                self.config.set(key, data_value)
+                self.set_normal_style(widget)
+                self.callback(key, text)
+            except Exception as e:
+                self.set_error_style(widget)
+                print(f"Error updating config for widget '{key}': {e}")
         else:
             self.set_error_style(widget)
 
@@ -202,18 +226,23 @@ class ItemWidget(QWidget):
         original_style = widget.property("originalStyle")
         widget.setStyleSheet(original_style or "color: Silver;")
 
-    def set_text(self, widget, value):
+    def set_text(self, widget, data):
         """
         Update the widget's text with the provided value.
 
         Args:
             widget (QWidget): The widget to update.
-            value (str or dict): The value to display in the widget.
+            data (str or dict): The data to display in the widget.
         """
+        str_value = to_text(data)
+
         if isinstance(widget, QComboBox):
-            widget.setCurrentText(value)
+            widget.setCurrentText(str_value)
         elif isinstance(widget, (QLineEdit, QTextEdit)):
-            str_value = to_text(value)
+            # Remove enclosing braces or brackets, if present
+            if str_value.startswith(("{", "[")) and str_value.endswith(("}", "]")):
+                str_value = str_value[1:-1]
+
             if isinstance(widget, QTextEdit):
                 widget.setPlainText(str_value)
             else:

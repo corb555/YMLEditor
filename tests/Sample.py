@@ -59,13 +59,14 @@ if __name__ == "__main__":
             "HOME": ("Home", "combo", ["A", "B", "C"], 200),
             "SITES.@HOME": ("Home Location", "read_only", None, 180),
             "SITES.B": ("Location B", "line_edit", None, 180),
-            "SITES": ("Sites", "line_edit", None, 500), "date": ("Date", "line_edit", None, 300),
+            "SITES": ("Sites", "line_edit", None, 500),
+            "date": ("Date", "line_edit", None, 300),
         },
     }
 
     # Load file
     config = YamlConfig()
-    file = "tests/sample.yml"
+    file = "sample.yml"
     success = config.load(file)
     if not success:
         sys.exit()

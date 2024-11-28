@@ -30,8 +30,8 @@ positive_test_cases = [  # (text, target_type, test_object)
      {'level1': {'level2': {'level3': 'deep'}}}), # 16
     ("[{'nested_dict': {'key': [1, 2, 3]}}, {'another_list': [4.5, 'text']}]", list,
      [{'nested_dict': {'key': [1, 2, 3]}}, {'another_list': [4.5, 'text']}]),  # 17
-    ("{'key': [1, {'inner_key': 'value'}, [True, False, None]]}", dict,
-     {'key': [1, {'inner_key': 'value'}, [True, False, None]]}),  # 18
+    ("{'key': [1, {'inner_key': 'value'}, [True, False, '']]}", dict,
+     {'key': [1, {'inner_key': 'value'}, [True, False, '']]}),  # 18
     ("[{'a': {'b': {'c': [1, 2, {'d': 3}]}}}, 'end']", list,
      [{'a': {'b': {'c': [1, 2, {'d': 3}]}}}, 'end']),  # 19
     ("{'a': [1, {'b': [2, {'c': '3'}]}]}", dict, {'a': [1, {'b': [2, {'c': '3'}]}]}),  # 20

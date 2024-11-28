@@ -10,14 +10,20 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "YMLEditor"
-version = "0.1.11"
-description = "Editor routines for text config and YAML config files"
+version = "0.1.12"
+description = "YMLEditor is a package for quickly creating editors for simple YAML configuration files."
 authors = [{ name = "corb" }]
 readme = "docs/readme.md"
 requires-python = ">=3.10"
 dependencies = [
     "PyYAML>=6.0.1",
     "PyQt6>=6.6.1",
+]
+keywords = ["YAML", "configuration", "editor"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
 ]
 
 [tool.setuptools]

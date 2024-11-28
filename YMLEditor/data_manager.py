@@ -351,7 +351,7 @@ class DataManager(ABC):
 
     def warn(self, message):
         if self.verbose > 0:
-            self.warn(message)
+            print(message)
 
 
 def touch_file(filename):

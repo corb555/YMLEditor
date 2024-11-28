@@ -47,8 +47,7 @@ def to_text(item, normalize=False):
     Converts a Python object into a string representation that is compatible with
     `ast.literal_eval`.
     This function handles common Python types including nested hierarchies and ensures proper
-    formatting for
-    compatibility with evaluation and representation needs.
+    formatting for compatibility with evaluation and representation needs.
 
     Args:
         item: The data structure to format. Supported types include:
@@ -57,7 +56,7 @@ def to_text(item, normalize=False):
             - `str`: Encased in single quotes, ensuring compatibility with evaluators.
             - `int` or `float`: Directly converted into their string representations.
             - `bool`: Represented as `True` or `False` in the string.
-            - `None`: Represented as the string `None`.
+            - `None`: Represented as the string ``.
             - `date`: Converted to an ISO-formatted string enclosed in single quotes.
 
         normalize (bool): If `True`, applies normalization rules to standardize strings for
@@ -103,9 +102,9 @@ def to_text(item, normalize=False):
         # Default behavior, return as-is
         return f"{item}"
 
-    # Handle NoneType as the string "None"
+    # Handle NoneType as the string ""
     elif item is None:
-        return "None"
+        return ""
 
     # Handle date objects by formatting them into ISO 8601 strings wrapped in single quotes
     elif isinstance(item, date):
@@ -144,7 +143,7 @@ def parse_text(text, target_type, rgx=None, fallbacks=None):
         text (str): The input string to parse.
         target_type (type): The desired type of the output (e.g., int, float, str, bool, date,
         etc.).
-        rgx: Optional parameter for additional handling (not implemented in this version).
+        rgx: Optional parameter for additional handling.
         fallbacks: Override default fallbacks.
 
     Returns:
@@ -175,7 +174,7 @@ def parse_text(text, target_type, rgx=None, fallbacks=None):
         valid = validate_text(text, rgx)
         if not valid:
             # Assign fallback value based on the target type
-            print(f"Failed rgx.  Text: {text} Rgx: {rgx}.")
+            print(f"Value '{text}' is not a valid for rgx '{rgx}'")
             value = fallbacks.get(target_type, None)
             error_flag = True
             return error_flag, value
@@ -352,13 +351,13 @@ def data_type(item):
 # Regular expression patterns for parsing dict and list text formats
 
 # Regex for dict: "key: value, key: value" format
-DICT_PATTERN = r"\s*([^\s:,][^:,]*?)\s*:\s*([^,]+?)\s*(?:,|$)"
+ZDICT_PATTERN = r"\s*([^\s:,][^:,]*?)\s*:\s*([^,]+?)\s*(?:,|$)"
 
 # Regex for list: 'item1','item2' format
-LIST_PATTERN = r"\s*\s*(['\"])([^'\"]*?)\1(?:\s*,\s*\1([^'\"]*?)\1)*\s*\s*"
+ZLIST_PATTERN = r"\s*\s*(['\"])([^'\"]*?)\1(?:\s*,\s*\1([^'\"]*?)\1)*\s*\s*"
 
 
-def get_regex(item):
+def Zget_regex(item):
     """
     Provides the regex pattern for matching the format of the item where item
     is a dict or list.
