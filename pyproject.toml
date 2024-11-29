@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "YMLEditor"
-version = "0.1.12"
+version= "0.1.13"
 description = "YMLEditor is a package for quickly creating editors for simple YAML configuration files."
 authors = [{ name = "corb" }]
 readme = "docs/readme.md"
@@ -21,6 +21,7 @@ dependencies = [
 ]
 keywords = ["YAML", "configuration", "editor"]
 classifiers = [
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.8",
@@ -30,7 +31,13 @@ classifiers = [
 # include the YMLEditor directory as a package in the distribution.
 packages = ["YMLEditor"]
 
+
 [tool.setuptools.package-dir]
 # The package is located in the root of the project
 # directory (i.e., not inside a src/ or lib/ directory)
 "" = "."
+
+[project.urls]
+Homepage = "https://your.project"
+Documentation = "https://docs.your.project"
+Repository = "https://github.com/corb555/YMLEditor"

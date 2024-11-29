@@ -36,14 +36,14 @@ def mock_callback():
 def test_item_widget_combo(app, mock_config, mock_callback):
     widget = ItemWidget(
         config=mock_config, widget_type="combo", initial_value="Option1",
-        options=["Option1", "Option2"], callback=mock_callback, key="key1", )
+        combo_rgx=["Option1", "Option2"], callback=mock_callback, key="key1", )
     assert isinstance(widget.widget, QComboBox)
     assert widget.widget.currentText() == "Option1"
 
 
 def test_item_widget_line_edit(app, mock_config, mock_callback):
     widget = ItemWidget(
-        config=mock_config, widget_type="line_edit", initial_value="Initial Text", options=r"^\w+$",
+        config=mock_config, widget_type="line_edit", initial_value="Initial Text", combo_rgx=r"^\w+$",
         # Regex for validation
         callback=mock_callback, key="key2", )
     assert isinstance(widget.widget, QLineEdit)
@@ -53,7 +53,7 @@ def test_item_widget_line_edit(app, mock_config, mock_callback):
 
 def test_item_widget_text_edit(app, mock_config, mock_callback):
     widget = ItemWidget(
-        config=mock_config, widget_type="text_edit", initial_value="Multiline Text", options=r".*",
+        config=mock_config, widget_type="text_edit", initial_value="Multiline Text", combo_rgx=r".*",
         # Allow any text
         callback=mock_callback, text_edit_height=100, key="key3", )
     assert isinstance(widget.widget, QTextEdit)
@@ -63,7 +63,7 @@ def test_item_widget_text_edit(app, mock_config, mock_callback):
 
 def test_item_widget_read_only(app, mock_config, mock_callback):
     widget = ItemWidget(
-        config=mock_config, widget_type="read_only", initial_value="Read-Only Text", options=None,
+        config=mock_config, widget_type="read_only", initial_value="Read-Only Text", combo_rgx=None,
         callback=mock_callback, key="key4", )
     assert isinstance(widget.widget, QLineEdit)
     assert widget.widget.text() == "Read-Only Text"
@@ -72,7 +72,7 @@ def test_item_widget_read_only(app, mock_config, mock_callback):
 
 def test_item_widget_on_widget_changed_invalid(app, mock_config, mock_callback):
     widget = ItemWidget(
-        config=mock_config, widget_type="line_edit", initial_value="ValidText", options=r"^\w+$",
+        config=mock_config, widget_type="line_edit", initial_value="ValidText", combo_rgx=r"^\w+$",
         callback=mock_callback, key="key1", )
     line_edit = widget.widget
     line_edit.setText("Invalid Text!")  # Fails regex
@@ -83,7 +83,7 @@ def test_item_widget_on_widget_changed_invalid(app, mock_config, mock_callback):
 
 def test_item_widget_set_text(app, mock_config, mock_callback):
     widget = ItemWidget(
-        config=mock_config, widget_type="line_edit", initial_value="Initial", options=None,
+        config=mock_config, widget_type="line_edit", initial_value="Initial", combo_rgx=None,
         callback=mock_callback, key="key1", )
     widget.set_text(widget.widget, "Updated Value")
     assert widget.widget.text() == "Updated Value"
@@ -91,7 +91,7 @@ def test_item_widget_set_text(app, mock_config, mock_callback):
 
 def test_item_widget_display(app, mock_config, mock_callback):
     widget = ItemWidget(
-        config=mock_config, widget_type="line_edit", initial_value="", options=None,
+        config=mock_config, widget_type="line_edit", initial_value="", combo_rgx=None,
         callback=mock_callback, key="key1", )
     widget.display()
     assert widget.widget.text() == "value1"  # From mock_config.get()

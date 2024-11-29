@@ -77,11 +77,14 @@ if __name__ == "__main__":
     # Create main window and add settings_widget and buttons
     window = create_window(settings_widget)
 
-    # Set the size of the window
-    # window.resize(900, 700)  # Width: 800px, Height: 600px
-
     # Display the settings
     settings_widget.display()
 
+    # Test delete and redisplay
+    settings_widget.clear_layout()
+    settings_widget.display()
+
     window.show()
+
+    # Start UI event loop
     sys.exit(app.exec())

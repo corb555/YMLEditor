@@ -54,7 +54,7 @@ class ItemWidget(QWidget):
     """
 
     def __init__(
-            self, config, widget_type, initial_value, options, callback, width=50, key=None,
+            self, config, widget_type, initial_value, combo_rgx, callback, width=50, key=None,
             text_edit_height=90, verbose=1
     ):
         """
@@ -65,7 +65,7 @@ class ItemWidget(QWidget):
             widget_type (str): Type of widget to create
                 ("text_edit", "line_edit", "read_only", "combo", "label").
             initial_value (str): Initial value to populate the widget.
-            options (Union[List[str], str]): Dropdown options for combo boxes or
+            combo_rgx (Union[List[str], str]): Dropdown options for combo boxes or
                 regex for validating text fields.
             callback (callable): Function to call when the widget value changes.
             width (int, optional): Fixed width for the widget. Defaults to 50.
@@ -85,32 +85,33 @@ class ItemWidget(QWidget):
         self._data_type = None
         self.verbose = verbose
 
-        self._create_widget(widget_type, initial_value, options, width, text_edit_height)
+        self._create_widget(widget_type, initial_value, combo_rgx, width, text_edit_height)
 
-    def _create_widget(self, widget_type, initial_value, options, width, text_edit_height):
+    def _create_widget(self, widget_type, initial_value, combo_rgx, width, text_edit_height):
         """
         Create a specific type of widget based on the provided parameters (private)
 
         Args:
             widget_type (str): The type of widget to create.
             initial_value (str): The initial value for the widget.
-            options (Union[List[str], str], optional): Options or validation regex.
+            combo_rgx (Union[List[str], str], optional): Combo options or validation regex.
             width (int): Width of the widget.
             text_edit_height (int): Height for text edit widgets.
         """
         if widget_type == "combo":
             self.widget = QComboBox()
-            self.widget.addItems(options)
+            self.widget.addItems(combo_rgx)
             self.widget.setCurrentText(initial_value)
         elif widget_type == "text_edit":
             self.widget = QTextEdit(str(initial_value))
             self.widget.setFixedHeight(text_edit_height)
-            self.rgx = options
+            self.rgx = combo_rgx
         elif widget_type == "line_edit":
             self.widget = QLineEdit(str(initial_value))
-            self.rgx = options
+            self.rgx = combo_rgx
         elif widget_type == "read_only":
             self.widget = QLineEdit(str(initial_value))
+            self.rgx = combo_rgx
             self.widget.setReadOnly(True)
         elif widget_type == "label":
             self.widget = QLabel()
@@ -169,8 +170,7 @@ class ItemWidget(QWidget):
         # Ensure text is valid and properly formatted
         if isinstance(text, str) and self._data_type:
             text = text.strip()  # Remove surrounding whitespace
-            #try:
-            if True:
+            try:
                 if self._data_type == dict:
                     # Add enclosing braces if not present and content is non-empty
                     if text and (not text.startswith("{") or not text.endswith("}")):
@@ -179,12 +179,11 @@ class ItemWidget(QWidget):
                     # Add enclosing brackets if not present and content is non-empty
                     if text and (not text.startswith("[") or not text.endswith("]")):
                         text = f"[{text}]"
-            """ 
+
             except Exception as e:
                 self.set_error_style(widget)
                 print(f"Error formatting text for widget '{key}': {e}")
                 return
-            """
 
         # Validate the text and parse it
         error_flag, data_value = parse_text(text, self._data_type, self.rgx)

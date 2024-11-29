@@ -67,7 +67,7 @@ class SettingsWidget(QWidget):
             config (Config): Configuration object to load, update, and store settings.
             formats (dict): Display formats for different modes.
             mode (str): Used to select between multiple layout formats.
-            redisplay_keys(List): Updates to these keys will trigger a full redisplay.
+            redisplay_keys (List): Updates to these keys will trigger a full redisplay.
             verbose (int): The verbosity level. Defaults to 1.
         """
         super().__init__()
@@ -75,40 +75,56 @@ class SettingsWidget(QWidget):
         self.config = config
         self.verbose = verbose
         self.formats = formats
-        self.mode = mode  # Select which format within formats to use
+        self._mode = mode  # Select which format within formats to use
         self.validate_format(formats, mode)
-        self.format = self.formats[mode]  # Get format for the current mode
         self.ignore_changes = False
         self.is_loaded = False
         self.redisplay_keys = redisplay_keys  # Keys that trigger full UI redisplay
         self.config_widgets = []
+
+        # Set up the top-level layout once
+        self.main_layout = QVBoxLayout(self)
+        self.grid_layout = QGridLayout()
+        self.main_layout.addLayout(self.grid_layout)
         self._setup_ui()
+
+    def change_mode(self, mode):
+        """
+        Change the current display mode and redisplay the UI.
+
+        Args:
+            mode (str): The new mode to switch to.
+
+        Raises:
+            ValueError: If the specified mode is not a valid key in `formats`.
+        """
+        if mode not in self.formats:
+            raise ValueError(f"Invalid mode '{mode}'. Must be one of: {list(self.formats.keys())}")
+
+        self._mode = mode
+        self.format = self.formats[mode]  # Update the format based on the new mode
+
+        self.clear_layout()
+        self._setup_ui()
+        self.display()
 
     def _setup_ui(self):
         """
         Create and arrange widgets based on the format.
 
-        Args:
-
         Raises:
             ValueError: If 'self.formats' is not set or is not a dictionary.
             KeyError: If the key in 'self.mode' is not found in 'self.formats'.
-            Exception: If an error occurs while setting up a widget, with details on the row and
-            key.
+            Exception: If an error occurs while setting up a widget, with details on the row and key.
         """
-        # Top-level layout for the entire widget
-        main_layout = QVBoxLayout(self)
-
-        self.grid_layout = QGridLayout()
-        main_layout.addLayout(self.grid_layout)
-
-        self.grid_layout.setSpacing(10)
+        # Clear the grid layout without removing the top-level layout
         self.clear_layout()
 
         row, data_key, format_row = -1, None, None
+        fmt = self.formats[self._mode]  # Get format for the current mode
 
         try:
-            for row, (data_key, format_row) in enumerate(self.format.items()):
+            for row, (data_key, format_row) in enumerate(fmt.items()):
                 label_text, widget_type, options, width = format_row
 
                 # Create specified ConfigWidget
@@ -145,13 +161,39 @@ class SettingsWidget(QWidget):
         v_spacer = QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.grid_layout.addItem(v_spacer, self.grid_layout.rowCount(), 0, 1, 3)
 
+    def clear_layout(self):
+        """
+        Clear the current settings widget layout.
+        """
+        self._clear_layout(self.grid_layout)
+
+    def _clear_layout(self, layout):
+        """
+        Remove all items from a layout.
+
+        Args:
+            layout (QLayout): The layout to clear.
+        """
+        self.config_widgets = []
+        self.is_loaded = False
+        while layout.count():
+            item = layout.takeAt(0)
+
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+
+            nested_layout = item.layout()
+            if nested_layout:
+                self._clear_layout(nested_layout)
+
     def display(self):
         """
         Update data from the Config data to the display widgets. Each widget's value is
         set based on the corresponding configuration key's value.
         """
         self.ignore_changes = True  # Temporarily ignore changes during synchronization
-        if not self.grid_layout.count():
+        if len(self.config_widgets) == 0:
             self._setup_ui()  # Initialize the UI if it hasn't been set up
 
         # Iterate over each item in the layout to update widget values from config
@@ -189,32 +231,6 @@ class SettingsWidget(QWidget):
         if key and self.redisplay_keys is not None:
             if key in self.redisplay_keys:
                 self.display()
-
-    def clear_layout(self):
-        """
-        Clear the current settings widget layout
-        """
-        self._clear_layout(self.grid_layout)
-
-    def _clear_layout(self, layout):
-        """
-        Remove all items from a layout
-
-        Args:
-            layout (QLayout): The layout to clear.
-        """
-        self.config_widgets = []
-        self.is_loaded = False
-        while layout.count():
-            item = layout.takeAt(0)
-
-            widget = item.widget()
-            if widget:
-                widget.deleteLater()
-
-            nested_layout = item.layout()
-            if nested_layout:
-                self._clear_layout(nested_layout)
 
     def validate_format(self, formats, mode):
         """

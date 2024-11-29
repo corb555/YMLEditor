@@ -77,6 +77,8 @@ def to_text(item, normalize=False):
     """
     # Handle dictionaries by converting each key-value pair into a formatted string
     if isinstance(item, dict):
+        # todo if key or val starts with an alphanum and does not have a space then don't surround
+        # in quotation marks
         formatted_pairs = [f"'{key}': {to_text(val, True)}" for key, val in item.items()]
         return "{" + ", ".join(formatted_pairs) + "}"
 
@@ -173,11 +175,13 @@ def parse_text(text, target_type, rgx=None, fallbacks=None):
     if rgx:
         valid = validate_text(text, rgx)
         if not valid:
+            if target_type is str:
+                # Strings are always returned as-is
+                return True, text
+
             # Assign fallback value based on the target type
-            print(f"Value '{text}' is not a valid for rgx '{rgx}'")
             value = fallbacks.get(target_type, None)
-            error_flag = True
-            return error_flag, value
+            return True, value
 
     if target_type is str:
         # Strings are always returned as-is
