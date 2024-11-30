@@ -105,9 +105,12 @@ class ItemWidget(QWidget):
         elif widget_type == "text_edit":
             self.widget = QTextEdit(str(initial_value))
             self.widget.setFixedHeight(text_edit_height)
+            # Disable drag-and-drop functionality
+            self.widget.setAcceptDrops(False)
             self.rgx = combo_rgx
         elif widget_type == "line_edit":
             self.widget = QLineEdit(str(initial_value))
+            self.widget.setAcceptDrops(False)
             self.rgx = combo_rgx
         elif widget_type == "read_only":
             self.widget = QLineEdit(str(initial_value))
@@ -241,6 +244,10 @@ class ItemWidget(QWidget):
             # Remove enclosing braces or brackets, if present
             if str_value.startswith(("{", "[")) and str_value.endswith(("}", "]")):
                 str_value = str_value[1:-1]
+
+            # Remove single and double quotes if the widget is read-only
+            if widget.isReadOnly():
+                str_value = str_value.replace('"', '').replace("'", '')
 
             if isinstance(widget, QTextEdit):
                 widget.setPlainText(str_value)

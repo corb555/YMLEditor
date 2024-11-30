@@ -77,8 +77,6 @@ def to_text(item, normalize=False):
     """
     # Handle dictionaries by converting each key-value pair into a formatted string
     if isinstance(item, dict):
-        # todo if key or val starts with an alphanum and does not have a space then don't surround
-        # in quotation marks
         formatted_pairs = [f"'{key}': {to_text(val, True)}" for key, val in item.items()]
         return "{" + ", ".join(formatted_pairs) + "}"
 
@@ -350,30 +348,3 @@ def data_type(item):
         The identified data type.
     """
     return type(item)
-
-
-# Regular expression patterns for parsing dict and list text formats
-
-# Regex for dict: "key: value, key: value" format
-ZDICT_PATTERN = r"\s*([^\s:,][^:,]*?)\s*:\s*([^,]+?)\s*(?:,|$)"
-
-# Regex for list: 'item1','item2' format
-ZLIST_PATTERN = r"\s*\s*(['\"])([^'\"]*?)\1(?:\s*,\s*\1([^'\"]*?)\1)*\s*\s*"
-
-
-def Zget_regex(item):
-    """
-    Provides the regex pattern for matching the format of the item where item
-    is a dict or list.
-
-    Parameters:
-        item: The data structure to determine the regex for.
-
-    Returns:
-        str: The regex pattern for matching the item's format, or None if unsupported.
-    """
-    if type(item) == dict:
-        return DICT_PATTERN
-    elif type(item) == list:
-        return LIST_PATTERN
-    return None

@@ -157,25 +157,21 @@ def test_parse_text_positive_edge_cases(text, target_type, expected_result):
 
 
 @pytest.mark.parametrize(
-    "text, target_type, rgx, expected_error_flag, expected_result", [  # Test for two-digit text
-        ("42", str, r"^\d{2}$", False, "42"),  # Valid two-digit string
-        ("123", str, r"^\d{2}$", True, DEFAULT_FALLBACKS.get(str)), # Invalid (more than two digits)
-
-        # Test for dictionary or list
+    "text, target_type, rgx, expected_error_flag, expected_result", [
+        ("42", str, r"^\d{2}$", False, "42"),  #  1 two-digit:valid
+        ("123", str, r"^\d{2}$", True, "123"), # 2 two_digits:invalid
         ("{'key': 'value', 'number': 42}", dict, r"^\{.*\}$|^\[.*\]$", False,
-         {'key': 'value', 'number': 42}),  # Valid dict
-        ("[1, 2, 3, 'four']", list, r"^\{.*\}$|^\[.*\]$", False, [1, 2, 3, 'four']),  # Valid list
-        ("Not a dict or list", str, r"^\{.*\}$|^\[.*\]$", True, DEFAULT_FALLBACKS.get(str)),
-        # Invalid format
-
-        # Test for command-line switch
-        ("-z 123", str, r"^-z\s+\d+(\s+)?$", False, "-z 123"),  # Valid switch
-        ("--z 123", str, r"^-z\s+\d+(\s+)?$", True, DEFAULT_FALLBACKS.get(str)),
-        # Invalid (double dash)
-        ("-z", str, r"^-z\s+\d+(\s+)?$", True, DEFAULT_FALLBACKS.get(str)),  # Missing value
-    ], ids=["two_digits:valid", "two_digits:invalid", "dict:valid", "list:valid",
-            "dict_or_list:invalid", "command_switch:valid", "command_switch:invalid_dash",
-            "command_switch:missing_value", ]
+         {'key': 'value', 'number': 42}),  # 3 dict:valid
+        ("[1, 2, 3, 'four']", list, r"^\{.*\}$|^\[.*\]$", False, [1, 2, 3, 'four']),  # 4 list:valid
+        ("Not a dict or list", str, r"^\{.*\}$|^\[.*\]$", True, "Not a dict or list"),
+        # 5 dict_or_list:invalid
+        ("-z 123", str, r"^-z\s+\d+(\s+)?$", False, "-z 123"),  # 6 command_switch:valid
+        ("--z 123", str, r"^-z\s+\d+(\s+)?$", True, "--z 123"),# 7 command_switch:invalid_dash
+        ("-z", str, r"^-z\s+\d+(\s+)?$", True, "-z"),  # 8 command_switch:missing_value
+    ],
+    ids=["1 two_digits:valid", "2 two_digits:invalid", "3 dict:valid", "4 list:valid",
+            "5 dict_or_list:invalid", "6 command_switch:valid", "7 command_switch:invalid_dash",
+            "8 command_switch:missing_value", ]
 )
 def test_parse_text_with_regex(text, target_type, rgx, expected_error_flag, expected_result):
     """

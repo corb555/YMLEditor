@@ -53,14 +53,12 @@ if __name__ == "__main__":
     # Create the UI layout for the fields in the "tests/sample.yml" file.
     formatsYAML = {
         "layout1": {
-            "LABEL1": ("Menu", "label", None, 400),
             "TIP": ("Tip Amount", "line_edit", r'^\d{1,2}%?$', 50),
             "DESSERT": ("Dessert", "combo", ["Tiramisu", "Apple Tart", "Cheesecake"], 200),
-            "HOME": ("Home", "combo", ["A", "B", "C"], 200),
-            "SITES.@HOME": ("Home Location", "read_only", None, 180),
+            "HOME": ("Home", "combo", ["A", "B", "C", "D"], 200),
+            "SITES.@HOME": ("Preferred", "read_only", None, 180),
             "SITES.B": ("Location B", "line_edit", None, 180),
             "SITES": ("Sites", "line_edit", None, 500),
-            "date": ("Date", "line_edit", None, 300),
         },
     }
 
