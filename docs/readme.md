@@ -19,7 +19,7 @@ read the config file, display the fields for editing, and then save the data.
 - **Configurable Layout:** Displays settings using the format you provide.
 - **Widget Support:** Supports these QT widgets: text edit, line edit, combo box, and label.
 - **Input Validation:** Validates input based on supplied regular expressions and 
-highlights invalid entries.
+highlights invalid entries. In the sample above, Tip Amount is highlighted because it contains letters.
 - **Data Syncing:** Synchronizes data values between the UI and the config file, seamlessly using the
   ConfigFile manager described below.
 - **Utilizes PyQt6**
