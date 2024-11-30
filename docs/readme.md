@@ -1,7 +1,6 @@
 # Readme
 
 <img width="622" alt="sample" src="https://github.com/corb555/YMLEditor/blob/main/images/YMLEditor.png">
-![screenshot](images/YMLEditor.png)
 
 ## Overview
 
