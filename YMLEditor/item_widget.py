@@ -55,7 +55,7 @@ class ItemWidget(QWidget):
 
     def __init__(
             self, config, widget_type, initial_value, combo_rgx, callback, width=50, key=None,
-            text_edit_height=90, verbose=1
+            text_edit_height=90, verbose=1, error_style = "color: Orange;"
     ):
         """
         Initialize
@@ -75,7 +75,7 @@ class ItemWidget(QWidget):
         """
         super().__init__()
 
-        self.error_style = "color: Orange;"
+        self.error_style = error_style
         self.rgx = None
         self.widget_type = widget_type
         self.callback = callback

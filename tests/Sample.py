@@ -12,33 +12,31 @@ the SettingsWidget for displaying and editing settings, and provides a save butt
 and an undo button.
 """
 
-
 def create_window(settings):
     """
-    Creates the main application window with the  settings widget.
+    Creates the main application window with the settings widget.
     """
+    w = QWidget()
+    layout = QVBoxLayout()
 
-    # Create Save button
+    # Create a horizontal button layout for save and undo buttons
+    button_bar = QHBoxLayout()
+
+    # Create and add Save button linked to settings.save()
     max_width = 80
     save_button = QPushButton("Save")
     save_button.clicked.connect(settings.save)
     save_button.setFixedWidth(max_width)
+    button_bar.addWidget(save_button)
 
-    # Create Undo button
+    # Create and add Undo button linked to settings.undo()
     undo_button = QPushButton("Undo")
     undo_button.clicked.connect(settings.undo)
     undo_button.setFixedWidth(max_width)
-
-    # Create button bar
-    button_bar = QHBoxLayout()
-    button_bar.addWidget(save_button)
     button_bar.addWidget(undo_button)
 
     # Set up the display with the settings widget and buttons
-    w = QWidget()
-    layout = QVBoxLayout()
-
-    layout.addWidget(settings)  # Add the scroll area instead of settings_widget directly
+    layout.addWidget(settings)
     layout.addLayout(button_bar)
     vertical_spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
     layout.addItem(vertical_spacer)
@@ -49,11 +47,23 @@ def create_window(settings):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    # Set background color for read only fields
+    # Set other widget colors to your preference here
+    app.setStyleSheet(
+        f"""
+                QLineEdit:read-only {{
+                    color:"lightslategray"; 
+                    background-color:"#3a3a3a";
+                    outline:none; 
+                    border:none;
+                }}
+                """
+    )
 
-    # Create the UI layout for the fields in the "tests/sample.yml" file.
+    # Create the layout for the fields in the "tests/sample.yml" file.
     formatsYAML = {
         "layout1": {
-            "TIP": ("Tip Amount", "line_edit", r'^\d{1,2}%?$', 50),
+            "TIP": ("Tip Amount", "line_edit", r'^\d{1,2}$', 50),
             "DESSERT": ("Dessert", "combo", ["Tiramisu", "Apple Tart", "Cheesecake"], 200),
             "HOME": ("Home", "combo", ["A", "B", "C", "D"], 200),
             "SITES.@HOME": ("Preferred", "read_only", None, 180),
@@ -62,27 +72,26 @@ if __name__ == "__main__":
         },
     }
 
-    # Load file
+    # Load YAML config file
     config = YamlConfig()
     file = "sample.yml"
     success = config.load(file)
     if not success:
         sys.exit()
 
-    # Create the settings widget to display and edit the YAML settings with our format
+    # Create a settings widget to display and edit the YAML settings with our format
     settings_widget = SettingsWidget(config, formatsYAML, "layout1", ["HOME"])
 
-    # Create main window and add settings_widget and buttons
+    # Create main window and add the settings_widget and buttons
     window = create_window(settings_widget)
 
     # Display the settings
     settings_widget.display()
-
-    # Test delete and redisplay
-    settings_widget.clear_layout()
-    settings_widget.display()
-
     window.show()
 
-    # Start UI event loop
+    # Start QT event loop
     sys.exit(app.exec())
+
+
+
+

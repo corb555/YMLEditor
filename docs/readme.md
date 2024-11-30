@@ -58,7 +58,7 @@ Each line in the format corresponds to a field in the config file:
 ```python
 formats = {
        "layout1": {
-              "TIP": ("Tip Amount", "line_edit", r'^\d{1,2}%?$', 50),
+              "TIP": ("Tip Amount", "line_edit", r'^\d{1,2}$', 50),
               "DESSERT": ("Dessert", "combo", ["Tiramisu", "Apple Tart", "Cheesecake"], 200),
               "HOME": ("Home", "combo", ["A", "B", "C"], 200),   
               "SITES.@HOME": ("Preferred", "read_only", None, 180),
@@ -69,6 +69,7 @@ formats = {
 ```
 - SITES.@HOME - If '@' is present, that key will be looked up and replace by its contents (SITES.C in this example)
 - SITES.B - You can access sub hierarchies by using "." to separate keys (Boston in this example)
+- TIP - The regex for Tips highlights entries that aren't simply 1 or 2 digits.
 
 ### Sample YAML file
 
