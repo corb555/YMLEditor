@@ -67,13 +67,15 @@ formats = {
        },
 }
 ```
+- SITES.@HOME - If '@' is present, that key will be looked up and replace by its contents (SITES.C in this example)
+- SITES.B - You can access sub hierarchies by using "." to separate keys (Boston in this example)
 
 ### Sample YAML file
 
 ```yaml
 TIP: 18
 DESSERT: Cheesecake
-HOME: A
+HOME: C
 SITES:
   A: New Orleans
   B: Boston
