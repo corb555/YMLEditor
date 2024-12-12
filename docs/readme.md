@@ -1,6 +1,6 @@
 # Readme
 
-<img width="622" alt="sample" src="https://github.com/corb555/YMLEditor/blob/main/images/YMLEditor.png">
+<img width="622" alt="sample" src="https://github.com/corb555/YMLEditor/blob/62749ffe58806449d0adba7040e1157ae4b184c2/images/YMLEditor.png">
 
 ## Overview
 
@@ -10,7 +10,7 @@ module that can save and load different file formats such as JSON or TOML.
 
 ## Features
 
-**SettingsWidget** provides a Widget for displaying and editing fields. You
+**SettingsWidget** provides a Widget for displaying and editing config file fields. You
 simply list the fields with their config key and the widget you want for each (line_edit, text_edit, label,
 combo-box). You can also add a regex for data entry validation. The SettingsWiget and YamlConfig  will
 read the config file, display the fields for editing, and then save the data.
@@ -24,7 +24,7 @@ highlights invalid entries. In the sample above, Tip Amount is highlighted becau
   ConfigFile manager described below.
 - **Utilizes PyQt6**
 
-**YamlConfig** provides functionality for creating, loading, updating, and saving YAML files.
+**YamlConfig** provides functionality for creating, loading, updating, and saving YAML files using PyYAML.
 
 - **Load / Save / Create** Provides interfaces to load and save YAML files and to create new YAML files.
 - **Get / Set Operations:** Provides simple key/value access to data fields in the YAML configuration, including
@@ -40,6 +40,11 @@ To install `YMLEditor`:
 ```bash
 pip install YMLEditor
 ```
+
+### Dependencies
+
+- PyYAML
+- PyQt6
 
 ### Format Layout
 

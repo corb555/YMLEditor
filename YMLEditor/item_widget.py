@@ -30,16 +30,16 @@ from typing import Union, List
 
 from PyQt6.QtWidgets import QWidget, QLabel, QComboBox, QLineEdit, QSizePolicy, QTextEdit
 
-from YMLEditor.structured_text import to_text, data_type, parse_text
+from YMLEditor.structured_text import to_text, data_type, parse_text, rebuild_dict
 
 
 class ItemWidget(QWidget):
     """
-    A widget for displaying and editing a single field from a config file.
+    A configurable widget for displaying and editing a single field from a config file.
 
     - Supports various widget types including editable text, combo boxes, and read-only labels.
     - All user edits are validated and synchronized with the config data.
-    - Uses `structured_text` module to parse  text representations of dictionaries and lists.
+    - Uses `structured_text` module to parse text representations of dictionaries and lists.
 
     Attributes:
         config(Config): The config file object.  Must support get, set, save, load.
@@ -71,7 +71,7 @@ class ItemWidget(QWidget):
             width (int, optional): Fixed width for the widget. Defaults to 50.
             key (str, optional): Key for linking the widget to the config data.
             text_edit_height (int, optional): Height for text edit widgets. Defaults to 90.
-            verbose (int, optional): Verbosity level. Defaults to 1.
+            verbose (int, optional): Verbosity level. 0=silent, 1=warnings, 2=information. Defaults to 1.
         """
         super().__init__()
 
@@ -148,16 +148,14 @@ class ItemWidget(QWidget):
             if self.widget:
                 key = self.widget.objectName()
                 if key:
-                    val = self.config.get(key)
-                    if val:
-                        if not self._data_type:
-                            self._data_type = data_type(val)
-                        self.set_text(self.widget, val)
+                    val = self.config.get(key) or ""
+                    if not self._data_type:
+                        self._data_type = data_type(val)
+                    self.set_text(self.widget, val)
         except Exception as e:
             key = key or "None"
             val = val or "None"
-            if self.verbose > 0:
-                print(f"Warning: widget key '{key}': {e}")
+            self.warn(f"Widget key '{key}': {e} val '{val}'")
 
     def _on_widget_changed(self, widget):
         """
@@ -175,34 +173,32 @@ class ItemWidget(QWidget):
             text = text.strip()  # Remove surrounding whitespace
             try:
                 if self._data_type == dict:
-                    # Add enclosing braces if not present and content is non-empty
-                    if text and (not text.startswith("{") or not text.endswith("}")):
-                        text = f"{{{text}}}"
+                    text = rebuild_dict(text)
                 elif self._data_type == list:
                     # Add enclosing brackets if not present and content is non-empty
                     if text and (not text.startswith("[") or not text.endswith("]")):
                         text = f"[{text}]"
-
             except Exception as e:
+                self.warn(f"Could not rebuild '{text}'")
                 self.set_error_style(widget)
-                print(f"Error formatting text for widget '{key}': {e}")
                 return
 
         # Validate the text and parse it
-        error_flag, data_value = parse_text(text, self._data_type, self.rgx)
-        self._is_valid = not error_flag
+        invalid, data_value = parse_text(text, self._data_type, self.rgx)
 
         # Update config and apply styles based on validation
-        if self._is_valid:
+        if invalid:
+            self.warn(f"parse error for {text}")
+            self.set_error_style(widget)
+        else:
             try:
                 self.config.set(key, data_value)
                 self.set_normal_style(widget)
+                self.info(f"Set '{key}' to '{data_value}'")
                 self.callback(key, text)
             except Exception as e:
                 self.set_error_style(widget)
-                print(f"Error updating config for widget '{key}': {e}")
-        else:
-            self.set_error_style(widget)
+                self.info(f"parse exception for {text}")
 
     def set_error_style(self, widget, message=None):
         """
@@ -226,7 +222,7 @@ class ItemWidget(QWidget):
             widget (QWidget): The widget to restore.
         """
         original_style = widget.property("originalStyle")
-        widget.setStyleSheet(original_style or "color: Silver;")
+        widget.setStyleSheet("color: Silver;")
 
     def set_text(self, widget, data):
         """
@@ -238,6 +234,8 @@ class ItemWidget(QWidget):
         """
         str_value = to_text(data)
 
+        self.widget.blockSignals(True)  # Block signals.  Don't reprocess widget update
+
         if isinstance(widget, QComboBox):
             widget.setCurrentText(str_value)
         elif isinstance(widget, (QLineEdit, QTextEdit)):
@@ -245,16 +243,51 @@ class ItemWidget(QWidget):
             if str_value.startswith(("{", "[")) and str_value.endswith(("}", "]")):
                 str_value = str_value[1:-1]
 
-            # Remove single and double quotes if the widget is read-only
             if widget.isReadOnly():
-                str_value = str_value.replace('"', '').replace("'", '')
+                # Process key-value pairs individually
+                tokens = str_value.split(",")  # Split into tokens
+                processed_tokens = []
+
+                for token in tokens:
+                    token = token.strip()  # Trim whitespace
+                    if ":" in token:  # Handle key-value pairs
+                        key, value = map(str.strip, token.split(":", 1))
+
+                        # Remove quotes from key
+                        if key.startswith(("'", '"')) and key.endswith(("'", '"')):
+                            key = key[1:-1]
+
+                        # Process value
+                        if value.startswith(("'", '"')) and value.endswith(("'", '"')):
+                            inner_value = value[1:-1]
+                            if inner_value:  # Non-blank value, remove enclosing quotes
+                                value = inner_value  # Blank values retain their quotes (e.g., '')
+
+                        processed_tokens.append(f"{key}: {value}")
+                    else:
+                        # Handle non key-value tokens (if any)
+                        processed_tokens.append(token)
+
+                str_value = ", ".join(processed_tokens)  # Reassemble tokens
+
 
             if isinstance(widget, QTextEdit):
                 widget.setPlainText(str_value)
             else:
                 widget.setText(str_value)
         else:
+            self.widget.blockSignals(False)  # Block signals
             raise TypeError(f"Unsupported widget type for setting value: {type(widget)}")
+
+        self.widget.blockSignals(False)  # Block signals
+
+    def warn(self, text):
+        if self.verbose > 0:
+            print(f"Warning: {text}")
+
+    def info(self, text):
+        if self.verbose > 0:
+            print(f"Info: {text}")
 
 
 def get_text(widget):
@@ -272,3 +305,5 @@ def get_text(widget):
     elif isinstance(widget, QTextEdit):
         return widget.toPlainText()
     return widget.text()
+
+

@@ -40,7 +40,6 @@ def test_item_widget_combo(app, mock_config, mock_callback):
     assert isinstance(widget.widget, QComboBox)
     assert widget.widget.currentText() == "Option1"
 
-
 def test_item_widget_line_edit(app, mock_config, mock_callback):
     widget = ItemWidget(
         config=mock_config, widget_type="line_edit", initial_value="Initial Text", combo_rgx=r"^\w+$",
@@ -87,6 +86,20 @@ def test_item_widget_set_text(app, mock_config, mock_callback):
         callback=mock_callback, key="key1", )
     widget.set_text(widget.widget, "Updated Value")
     assert widget.widget.text() == "Updated Value"
+
+def test_item_widget_set_none(app, mock_config, mock_callback):
+    widget = ItemWidget(
+        config=mock_config, widget_type="line_edit", initial_value="Initial", combo_rgx=None,
+        callback=mock_callback, key="key1", )
+    # 1) Set text
+    widget.set_text(widget.widget, "Updated Value")
+    assert widget.widget.text() == "Updated Value"
+    # 2) Set None
+    widget.set_text(widget.widget, None)
+    assert widget.widget.text() == "''"
+    # 3) Set text
+    widget.set_text(widget.widget, "Updated Value2")
+    assert widget.widget.text() == "Updated Value2"
 
 
 def test_item_widget_display(app, mock_config, mock_callback):

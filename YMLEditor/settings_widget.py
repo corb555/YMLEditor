@@ -88,7 +88,7 @@ class SettingsWidget(QWidget):
         self.main_layout.addLayout(self.grid_layout)
         self._setup_ui()
 
-    def change_mode(self, mode):
+    def set_layout(self, mode):
         """
         Change the current display mode and redisplay the UI.
 

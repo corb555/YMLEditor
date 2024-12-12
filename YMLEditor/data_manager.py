@@ -94,7 +94,7 @@ class DataManager(ABC):
 
     def load(self, path):
         """
-        Load data from the specified file and initialize  state.
+        Load data from the specified file and initialize state.
         Create an initial snapshot for undo functionality.
 
         Args:
@@ -125,7 +125,7 @@ class DataManager(ABC):
         except ValueError as e:
             self.warn(f"Error: Invalid file contents using {self.__class__.__name__}: {path}\n{e}")
         except Exception as e:
-            self.warn(f"Error loading: the file using {self.__class__.__name__}: {path}\n{e}")
+            self.warn(f"Error loading:  {self.__class__.__name__}: {path}\n{e}")
         return False
 
     def get_open_mode(self, write=False):
@@ -182,8 +182,7 @@ class DataManager(ABC):
         self.__setitem__(key, value)
 
         # Check if updating this key should trigger a touch to a proxy_file
-        proxy_file = self._get_proxy(key)
-        if proxy_file is not None:
+        if proxy_file := self._get_proxy(key):
             touch_file(proxy_file)
 
     def get(self, key_or_index, default=None):
@@ -258,7 +257,9 @@ class DataManager(ABC):
             self._data = self.snapshots.pop()
         else:
             self._data = copy.deepcopy(self.snapshots[0])
+
         self.unsaved_changes = True  # Data has been modified
+
 
     def snapshot_push(self):
         """
@@ -398,7 +399,7 @@ class DataHandler(ABC):
         if not (0 <= idx <= len(data_list)):
             raise IndexError(f"Index {idx} is out of range for insertion.")
         data_list.insert(idx, item)
-        self.unsaved_changes = True
+
 
     def delete(self, data: Union[Dict, list], idx: Union[str, int]) -> None:
         """
@@ -443,8 +444,6 @@ class DataHandler(ABC):
         Internal method for getting or setting values in nested data structures.
         """
         key = self.replace_indirect(data, key)
-        if key is None:
-            return None
 
         try:
             container, final_key = self._navigate_hierarchy(data, key, create_missing=set_item)

@@ -77,8 +77,12 @@ def to_text(item, normalize=False):
     """
     # Handle dictionaries by converting each key-value pair into a formatted string
     if isinstance(item, dict):
-        formatted_pairs = [f"'{key}': {to_text(val, True)}" for key, val in item.items()]
-        return "{" + ", ".join(formatted_pairs) + "}"
+        formatted_pairs = [
+            f"'{key}': {to_text(val if val is not None and val != '' else '', True)}"
+            for key, val in item.items()
+        ]
+        result = "{" + ", ".join(formatted_pairs) + "}"
+        return result
 
     # Handle lists by converting each element into its formatted string representation
     elif isinstance(item, list):
@@ -104,7 +108,7 @@ def to_text(item, normalize=False):
 
     # Handle NoneType as the string ""
     elif item is None:
-        return ""
+        return "''"
 
     # Handle date objects by formatting them into ISO 8601 strings wrapped in single quotes
     elif isinstance(item, date):
@@ -114,8 +118,6 @@ def to_text(item, normalize=False):
     elif isinstance(item, tuple):
         formatted_elements = [to_text(element, True) for element in item]
         return "(" + ", ".join(formatted_elements) + ("," if len(item) == 1 else "") + ")"
-
-
     # Raise an error for unsupported types
     else:
         raise TypeError(f"Unsupported type: {type(item).__name__}")
@@ -150,7 +152,6 @@ def parse_text(text, target_type, rgx=None, fallbacks=None):
         tuple: (error_flag, result)
             - error_flag (bool): Indicates if parsing errors or type mismatches occurred.
             - result: The parsed object if successful, or a fallback value if parsing fails.
-
     Raises:
         None: Any exceptions during parsing are handled internally and result in a fallback value.
 
@@ -171,8 +172,10 @@ def parse_text(text, target_type, rgx=None, fallbacks=None):
 
     # Validate against rgx
     if rgx:
+        info(f"check regex: val={text} rgx={rgx}")
         valid = validate_text(text, rgx)
         if not valid:
+            info(f"regex validation failed for '{text}'")
             if target_type is str:
                 # Strings are always returned as-is
                 return True, text
@@ -180,6 +183,8 @@ def parse_text(text, target_type, rgx=None, fallbacks=None):
             # Assign fallback value based on the target type
             value = fallbacks.get(target_type, None)
             return True, value
+
+    info(f"parse text: {text} target_type={target_type}")
 
     if target_type is str:
         # Strings are always returned as-is
@@ -218,6 +223,7 @@ def _parse_text(text, target_type=None, rgx=None):
     """
     try:
         # Attempt parsing the string with `ast.literal_eval`
+        info(f"parsing <{text}>")
         result = ast.literal_eval(text)
 
         # Handle dictionaries by recursively parsing keys and values
@@ -228,6 +234,8 @@ def _parse_text(text, target_type=None, rgx=None):
                 sub_error, sub_result = _parse_text(repr(value), None, rgx)
                 error_flag |= sub_error
                 parsed_dict[key] = sub_result
+                if error_flag:
+                    info(f"parsing error1 for '{key}' value '{value}'")
             return error_flag, parsed_dict
 
         # Handle lists by recursively parsing each element
@@ -238,6 +246,8 @@ def _parse_text(text, target_type=None, rgx=None):
                 sub_error, sub_result = _parse_text(repr(item), None, rgx)
                 error_flag |= sub_error
                 parsed_list.append(sub_result)
+                if error_flag:
+                    info(f"parsing error2 for value '{item}'")
             return error_flag, parsed_list
 
         # Handle tuples
@@ -248,19 +258,97 @@ def _parse_text(text, target_type=None, rgx=None):
                 sub_error, sub_result = _parse_text(repr(item), None, rgx)
                 error_flag |= sub_error
                 parsed_tuple.append(sub_result)
+            if error_flag:
+                info(f"parsing error3 for '{tuple}'")
             return error_flag, tuple(parsed_tuple)
 
         # Scalar values: Convert to target type if specified
         if target_type:
             type_error, converted = _convert_value(result, target_type)
+            if type_error:
+                info(f"convert error for '{result}'")
             return type_error, converted
 
         # Return the scalar value as-is if no target type is specified
         return False, result
 
-    except (ValueError, SyntaxError, TypeError):
+    except (ValueError, SyntaxError, TypeError) as e:
         # Handle parsing errors by returning an error flag and None
+        info(f"parsing error4 for '{text}'")
         return True, None
+
+def rebuild_dict(txt):
+    """
+    Rebuild a dictionary-like string, ensuring proper formatting with quoted keys and values.
+
+    Args:
+        txt (str): The input string containing key-value pairs in simplified dictionary-like format.
+                   Example: "key1: value1, key2: value2"
+
+    Returns:
+        str: An AST formatted dictionary string with single quotes around keys and values.
+             Example: "{'key1': 'value1', 'key2': 'value2'}"
+
+    Notes:
+        - Ensures the input text is enclosed in curly braces `{}`.
+        - Utilizes `format_key_value_pairs` to process individual key-value pairs.
+    """
+    # Add enclosing braces if not present and content is non-empty
+    if txt and (not txt.startswith("{") or not txt.endswith("}")):
+        txt = f"{{{txt}}}"
+
+    # Process the content inside the braces and build an AST dictionary string
+    text_content = txt.strip("{}")  # Remove braces for processing
+    return f"{{{format_key_value_pairs(text_content)}}}"
+
+
+def format_key_value_pairs(text):
+    """
+    Format key-value pairs by adding single quotes around keys and values.
+
+    Args:
+        text (str): The input string of key-value pairs, separated by commas.
+                    Example: "key1: value1, key2: value2"
+
+    Returns:
+        str: A string of properly formatted key-value pairs with single quotes.
+             Example: "'key1': 'value1', 'key2': 'value2'"
+
+    Raises:
+        ValueError: If a key-value pair is invalid (does not contain exactly one colon).
+
+    Notes:
+        - Strips any whitespace or surrounding quotes from keys and values.
+        - Adds single quotes around keys and values unless the value is empty (`''`),
+          in which case it remains as `''`.
+        - Processes each pair individually and joins them back into a string.
+    """
+    formatted_pairs = []
+    pairs = text.split(",")  # Split key-value pairs by commas
+
+    for pair in pairs:
+        key_value = pair.split(":")  # Split each pair into key and value by colon
+        if len(key_value) == 2:
+            key, value = key_value
+
+            # Strip whitespace and any surrounding quotes from key and value
+            key = key.strip().strip("'").strip('"')
+            value = value.strip().strip("'").strip('"')
+
+            # Add single quotes around key and value
+            key = f"'{key}'"
+            if value == "":  # Leave value as-is if it's empty
+                value = "''"
+            else:
+                value = f"'{value}'"
+
+            # Append the formatted key-value pair to the list
+            formatted_pairs.append(f"{key}: {value}")
+        else:
+            raise ValueError(f"Invalid key-value pair: {pair.strip()}")
+
+    # Join the formatted key-value pairs into a single string
+    return ", ".join(formatted_pairs)
 
 
 def validate_text(text, regex):
@@ -348,3 +436,10 @@ def data_type(item):
         The identified data type.
     """
     return type(item)
+
+def warn( text):
+    pass
+
+def info(text):
+    pass
+

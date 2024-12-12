@@ -35,6 +35,9 @@ positive_test_cases = [  # (text, target_type, test_object)
     ("[{'a': {'b': {'c': [1, 2, {'d': 3}]}}}, 'end']", list,
      [{'a': {'b': {'c': [1, 2, {'d': 3}]}}}, 'end']),  # 19
     ("{'a': [1, {'b': [2, {'c': '3'}]}]}", dict, {'a': [1, {'b': [2, {'c': '3'}]}]}),  # 20
+
+    # Switches
+    ("-s 21", str, "-s 21"),  # 21
 ]
 
 positive_test_ids = ["1 int:positive", "2 int:negative", "3 float:pi", "4 bool:True",
@@ -43,7 +46,7 @@ positive_test_ids = ["1 int:positive", "2 int:negative", "3 float:pi", "4 bool:T
                      "13 dict:mixed_types", "14 list:dict_elements", "15 dict:simple",
                      "16 dict:deep_nested_levels", "17 list:deep_nested_mixed",
                      "18 dict:complex_list_structure", "19 list:multiple_nested_dicts",
-                     "20 dict:nested_lists_and_dicts", ]
+                     "20 dict:nested_lists_and_dicts", "21 str:Switches"]
 
 
 # Positive cases
@@ -105,6 +108,7 @@ def test_roundtrip(text, target_type, test_object):
     ids=["1 int:invalid_string", "2 int:from_string", "3 int:float", "4 float:non-numeric_string",
          "5 date:invalid_format", "6 dict:malformed", "7 list:malformed", "8 int:malformed",
          "9 float:malformed", ], )
+
 def test_parse_text_neg(text, target_type, expected_result):
     """
     Test parse_text for negative cases with invalid or malformed inputs.
@@ -114,18 +118,6 @@ def test_parse_text_neg(text, target_type, expected_result):
     print("Result:", result)
     assert error == True, f"Failed error_flag: Expected=True, Got={error}"
     assert result == expected_result, f"Failed result: Expected={expected_result}, Got={result}"
-
-
-def Ztest_round_trip_b(text, target_type, test_object):
-    """
-    Test roundtrip: to_text and parse_text back to obj for valid inputs.
-    """
-    error_flag, parsed_obj = parse_text(text, type(test_object))
-    assert not error_flag, f"Parsing failed for: {text}"
-    txt = to_text(parsed_obj)
-    print(f"\nto_text result: {txt}")
-    assert txt == text, f"Roundtrip failed: Expected={test_object}, Got={parsed_obj}"
-
 
 # Test to_text for unsupported types
 @pytest.mark.parametrize(
@@ -147,6 +139,7 @@ def test_to_text_invalid_types(obj, expected_exception):
             {'nested': {'level1': {'level2': {'key': 'value'}}}}), ("[]", list, []),
      ("{}", dict, {}), ],
     ids=["dict:empty_structures", "dict:deep_nested", "list:empty", "dict:empty", ], )
+
 def test_parse_text_positive_edge_cases(text, target_type, expected_result):
     """
     Test parse_text for edge cases such as empty and deeply nested structures.
@@ -173,6 +166,7 @@ def test_parse_text_positive_edge_cases(text, target_type, expected_result):
             "5 dict_or_list:invalid", "6 command_switch:valid", "7 command_switch:invalid_dash",
             "8 command_switch:missing_value", ]
 )
+
 def test_parse_text_with_regex(text, target_type, rgx, expected_error_flag, expected_result):
     """
     Test `parse_text` with regex validation for various cases.

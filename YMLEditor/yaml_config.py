@@ -78,6 +78,5 @@ class YamlConfig(DataManager):
         if data:
             # Save the updated data to the file
             yaml.safe_dump(data, f, sort_keys=False, default_flow_style=False)
-            self.unsaved_changes = False
         else:
             raise ValueError("_data is None")

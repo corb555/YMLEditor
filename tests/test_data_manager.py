@@ -23,6 +23,20 @@ class TestDataManager:
 
         return TestDataManager(verbose=1)
 
+    def test_set_get(self, data_manager):
+        # 1. Initialize "key" to "value" and verify
+        data_manager._data = {"key": "value"}
+        assert data_manager.get("key") == "value", "Failed to set and retrieve 'key' as 'value'"
+
+        # 2. Set "key2" to None and verify
+        data_manager.set("key2", None)
+        assert data_manager.get("key2") is None, "Failed to set and retrieve 'key2' as None"
+
+        # 3. Set "key" to "value" again and verify
+        data_manager.set("key2", "value")
+        assert data_manager.get("key2") == "value", \
+            "Failed to set and retrieve 'key2' as 'value' again"
+
     def test_initialization(self, data_manager):
         """Test the initialization of DataManager."""
         assert data_manager.verbose == 1
