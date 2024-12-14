@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "YMLEditor"
-version= "0.1.15"
+version= "0.1.16"
 description = "YMLEditor is a package for quickly creating editors for simple YAML configuration files."
 authors = [{ name = "corb" }]
 readme = "docs/readme.md"

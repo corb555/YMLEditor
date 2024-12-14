@@ -150,8 +150,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Handle dictionaries by converting each key-value pair into a formatted string</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">formatted_pairs</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">to_text</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="kc">True</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
-        <span class="k">return</span> <span class="s2">&quot;{&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formatted_pairs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span>
+        <span class="n">formatted_pairs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">to_text</span><span class="p">(</span><span class="n">val</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">True</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;{&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formatted_pairs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span>
+        <span class="k">return</span> <span class="n">result</span>
 
     <span class="c1"># Handle lists by converting each element into its formatted string representation</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -177,7 +181,7 @@
 
     <span class="c1"># Handle NoneType as the string &quot;&quot;</span>
     <span class="k">elif</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;&#39;&#39;&quot;</span>
 
     <span class="c1"># Handle date objects by formatting them into ISO 8601 strings wrapped in single quotes</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
@@ -187,8 +191,6 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">formatted_elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_text</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">item</span><span class="p">]</span>
         <span class="k">return</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formatted_elements</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;,&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-
-
     <span class="c1"># Raise an error for unsupported types</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
@@ -226,7 +228,6 @@
 <span class="sd">        tuple: (error_flag, result)</span>
 <span class="sd">            - error_flag (bool): Indicates if parsing errors or type mismatches occurred.</span>
 <span class="sd">            - result: The parsed object if successful, or a fallback value if parsing fails.</span>
-
 <span class="sd">    Raises:</span>
 <span class="sd">        None: Any exceptions during parsing are handled internally and result in a fallback value.</span>
 
@@ -247,13 +248,19 @@
 
     <span class="c1"># Validate against rgx</span>
     <span class="k">if</span> <span class="n">rgx</span><span class="p">:</span>
+        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;check regex: val=</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2"> rgx=</span><span class="si">{</span><span class="n">rgx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">valid</span> <span class="o">=</span> <span class="n">validate_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">rgx</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+            <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;regex validation failed for &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">target_type</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="c1"># Strings are always returned as-is</span>
+                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">text</span>
+
             <span class="c1"># Assign fallback value based on the target type</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; is not a valid for rgx &#39;</span><span class="si">{</span><span class="n">rgx</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">fallbacks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">error_flag</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="n">error_flag</span><span class="p">,</span> <span class="n">value</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">value</span>
+
+    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parse text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2"> target_type=</span><span class="si">{</span><span class="n">target_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">target_type</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
         <span class="c1"># Strings are always returned as-is</span>
@@ -293,6 +300,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Attempt parsing the string with `ast.literal_eval`</span>
+        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parsing &lt;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&gt;&quot;</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
         <span class="c1"># Handle dictionaries by recursively parsing keys and values</span>
@@ -303,6 +311,8 @@
                 <span class="n">sub_error</span><span class="p">,</span> <span class="n">sub_result</span> <span class="o">=</span> <span class="n">_parse_text</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rgx</span><span class="p">)</span>
                 <span class="n">error_flag</span> <span class="o">|=</span> <span class="n">sub_error</span>
                 <span class="n">parsed_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_result</span>
+                <span class="k">if</span> <span class="n">error_flag</span><span class="p">:</span>
+                    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parsing error1 for &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">error_flag</span><span class="p">,</span> <span class="n">parsed_dict</span>
 
         <span class="c1"># Handle lists by recursively parsing each element</span>
@@ -313,6 +323,8 @@
                 <span class="n">sub_error</span><span class="p">,</span> <span class="n">sub_result</span> <span class="o">=</span> <span class="n">_parse_text</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rgx</span><span class="p">)</span>
                 <span class="n">error_flag</span> <span class="o">|=</span> <span class="n">sub_error</span>
                 <span class="n">parsed_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_result</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">error_flag</span><span class="p">:</span>
+                    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parsing error2 for value &#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">error_flag</span><span class="p">,</span> <span class="n">parsed_list</span>
 
         <span class="c1"># Handle tuples</span>
@@ -323,19 +335,103 @@
                 <span class="n">sub_error</span><span class="p">,</span> <span class="n">sub_result</span> <span class="o">=</span> <span class="n">_parse_text</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rgx</span><span class="p">)</span>
                 <span class="n">error_flag</span> <span class="o">|=</span> <span class="n">sub_error</span>
                 <span class="n">parsed_tuple</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_result</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">error_flag</span><span class="p">:</span>
+                <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parsing error3 for &#39;</span><span class="si">{</span><span class="nb">tuple</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">error_flag</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">parsed_tuple</span><span class="p">)</span>
 
         <span class="c1"># Scalar values: Convert to target type if specified</span>
         <span class="k">if</span> <span class="n">target_type</span><span class="p">:</span>
             <span class="n">type_error</span><span class="p">,</span> <span class="n">converted</span> <span class="o">=</span> <span class="n">_convert_value</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">target_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">type_error</span><span class="p">:</span>
+                <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;convert error for &#39;</span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">type_error</span><span class="p">,</span> <span class="n">converted</span>
 
         <span class="c1"># Return the scalar value as-is if no target type is specified</span>
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">result</span>
 
-    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">SyntaxError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">SyntaxError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># Handle parsing errors by returning an error flag and None</span>
+        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parsing error4 for &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="rebuild_dict">
+<a class="viewcode-back" href="../structured_text.html#structured_text.rebuild_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">rebuild_dict</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rebuild a dictionary-like string, ensuring proper formatting with quoted keys and values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        txt (str): The input string containing key-value pairs in simplified dictionary-like format.</span>
+<span class="sd">                   Example: &quot;key1: value1, key2: value2&quot;</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: An AST formatted dictionary string with single quotes around keys and values.</span>
+<span class="sd">             Example: &quot;{&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;}&quot;</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - Ensures the input text is enclosed in curly braces `{}`.</span>
+<span class="sd">        - Utilizes `format_key_value_pairs` to process individual key-value pairs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Add enclosing braces if not present and content is non-empty</span>
+    <span class="k">if</span> <span class="n">txt</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">txt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">txt</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">)):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="si">{</span><span class="n">txt</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># Process the content inside the braces and build an AST dictionary string</span>
+    <span class="n">text_content</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Remove braces for processing</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="si">{</span><span class="n">format_key_value_pairs</span><span class="p">(</span><span class="n">text_content</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="format_key_value_pairs">
+<a class="viewcode-back" href="../structured_text.html#structured_text.format_key_value_pairs">[docs]</a>
+<span class="k">def</span> <span class="nf">format_key_value_pairs</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format key-value pairs by adding single quotes around keys and values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text (str): The input string of key-value pairs, separated by commas.</span>
+<span class="sd">                    Example: &quot;key1: value1, key2: value2&quot;</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: A string of properly formatted key-value pairs with single quotes.</span>
+<span class="sd">             Example: &quot;&#39;key1&#39;: &#39;value1&#39;, &#39;key2&#39;: &#39;value2&#39;&quot;</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If a key-value pair is invalid (does not contain exactly one colon).</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        - Strips any whitespace or surrounding quotes from keys and values.</span>
+<span class="sd">        - Adds single quotes around keys and values unless the value is empty (`&#39;&#39;`),</span>
+<span class="sd">          in which case it remains as `&#39;&#39;`.</span>
+<span class="sd">        - Processes each pair individually and joins them back into a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">formatted_pairs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>  <span class="c1"># Split key-value pairs by commas</span>
+
+    <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+        <span class="n">key_value</span> <span class="o">=</span> <span class="n">pair</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>  <span class="c1"># Split each pair into key and value by colon</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">key_value</span>
+
+            <span class="c1"># Strip whitespace and any surrounding quotes from key and value</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Add single quotes around key and value</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>  <span class="c1"># Leave value as-is if it&#39;s empty</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&#39;&#39;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+
+            <span class="c1"># Append the formatted key-value pair to the list</span>
+            <span class="n">formatted_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid key-value pair: </span><span class="si">{</span><span class="n">pair</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Join the formatted key-value pairs into a single string</span>
+    <span class="k">return</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formatted_pairs</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="validate_text">
@@ -430,34 +526,17 @@
     <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
 
 
-
-<span class="c1"># Regular expression patterns for parsing dict and list text formats</span>
-
-<span class="c1"># Regex for dict: &quot;key: value, key: value&quot; format</span>
-<span class="n">ZDICT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\s*([^\s:,][^:,]*?)\s*:\s*([^,]+?)\s*(?:,|$)&quot;</span>
-
-<span class="c1"># Regex for list: &#39;item1&#39;,&#39;item2&#39; format</span>
-<span class="n">ZLIST_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\s*\s*([&#39;</span><span class="se">\&quot;</span><span class="s2">])([^&#39;</span><span class="se">\&quot;</span><span class="s2">]*?)\1(?:\s*,\s*\1([^&#39;</span><span class="se">\&quot;</span><span class="s2">]*?)\1)*\s*\s*&quot;</span>
+<div class="viewcode-block" id="warn">
+<a class="viewcode-back" href="../structured_text.html#structured_text.warn">[docs]</a>
+<span class="k">def</span> <span class="nf">warn</span><span class="p">(</span> <span class="n">text</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="Zget_regex">
-<a class="viewcode-back" href="../structured_text.html#structured_text.Zget_regex">[docs]</a>
-<span class="k">def</span> <span class="nf">Zget_regex</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provides the regex pattern for matching the format of the item where item</span>
-<span class="sd">    is a dict or list.</span>
+<div class="viewcode-block" id="info">
+<a class="viewcode-back" href="../structured_text.html#structured_text.info">[docs]</a>
+<span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">        item: The data structure to determine the regex for.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The regex pattern for matching the item&#39;s format, or None if unsupported.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">DICT_PATTERN</span>
-    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">LIST_PATTERN</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
 
 </pre></div>
 

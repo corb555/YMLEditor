@@ -55,7 +55,7 @@ class ItemWidget(QWidget):
 
     def __init__(
             self, config, widget_type, initial_value, combo_rgx, callback, width=50, key=None,
-            text_edit_height=90, verbose=1, error_style = "color: Orange;"
+            text_edit_height=60, verbose=1, error_style = "color: Orange;"
     ):
         """
         Initialize
@@ -195,10 +195,10 @@ class ItemWidget(QWidget):
                 self.config.set(key, data_value)
                 self.set_normal_style(widget)
                 self.info(f"Set '{key}' to '{data_value}'")
-                self.callback(key, text)
             except Exception as e:
                 self.set_error_style(widget)
-                self.info(f"parse exception for {text}")
+                self.info(f"Error setting {text}")
+            self.callback(key, text)
 
     def set_error_style(self, widget, message=None):
         """
@@ -286,7 +286,7 @@ class ItemWidget(QWidget):
             print(f"Warning: {text}")
 
     def info(self, text):
-        if self.verbose > 0:
+        if self.verbose > 1:
             print(f"Info: {text}")
 
 

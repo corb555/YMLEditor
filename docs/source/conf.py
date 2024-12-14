@@ -1,12 +1,13 @@
 # Configuration file for the Sphinx documentation builder.
 #
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+# To build .rst files for YMLEditor modules:
+# Go to the projectroot folder (YMLEditor)
+# sphinx-apidoc -o docs/source YMLEditor
 
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../YMLEditor'))
+sys.path.insert(0, os.path.abspath('../../YMLEditor'))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information

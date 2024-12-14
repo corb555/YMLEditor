@@ -19,7 +19,6 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Readme" href="readme.html" />
     <link rel="prev" title="yaml_config module" href="yaml_config.html" /> 
 </head>
 
@@ -49,16 +48,18 @@
 <li class="toctree-l2"><a class="reference internal" href="data_manager.html">data_manager module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="yaml_config.html">yaml_config module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">structured_text module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#structured_text.Zget_regex"><code class="docutils literal notranslate"><span class="pre">Zget_regex()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structured_text.data_type"><code class="docutils literal notranslate"><span class="pre">data_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structured_text.format_key_value_pairs"><code class="docutils literal notranslate"><span class="pre">format_key_value_pairs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structured_text.info"><code class="docutils literal notranslate"><span class="pre">info()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structured_text.parse_text"><code class="docutils literal notranslate"><span class="pre">parse_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structured_text.rebuild_dict"><code class="docutils literal notranslate"><span class="pre">rebuild_dict()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structured_text.to_text"><code class="docutils literal notranslate"><span class="pre">to_text()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structured_text.validate_text"><code class="docutils literal notranslate"><span class="pre">validate_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structured_text.warn"><code class="docutils literal notranslate"><span class="pre">warn()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html">Readme</a></li>
 </ul>
 
         </div>
@@ -99,24 +100,6 @@ friendly text format.</p>
 <li><p>Supports simple dict, list, and scalar (int, float, bool, etc.)</p></li>
 </ul>
 <dl class="py function">
-<dt class="sig sig-object py" id="structured_text.Zget_regex">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">Zget_regex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#Zget_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.Zget_regex" title="Link to this definition"></a></dt>
-<dd><p>Provides the regex pattern for matching the format of the item where item
-is a dict or list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>item</strong> – The data structure to determine the regex for.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The regex pattern for matching the item’s format, or None if unsupported.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="structured_text.data_type">
 <span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.data_type" title="Link to this definition"></a></dt>
 <dd><p>Identifies the item’s data type (List, Dict, int, float, bool, str).</p>
@@ -129,6 +112,43 @@ is a dict or list.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="structured_text.format_key_value_pairs">
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">format_key_value_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#format_key_value_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.format_key_value_pairs" title="Link to this definition"></a></dt>
+<dd><p>Format key-value pairs by adding single quotes around keys and values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – The input string of key-value pairs, separated by commas.
+Example: “key1: value1, key2: value2”</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A string of properly formatted key-value pairs with single quotes.</dt><dd><p>Example: “‘key1’: ‘value1’, ‘key2’: ‘value2’”</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If a key-value pair is invalid (does not contain exactly one colon).</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Strips any whitespace or surrounding quotes from keys and values.</p></li>
+<li><p>Adds single quotes around keys and values unless the value is empty (<cite>‘’</cite>),
+in which case it remains as <cite>‘’</cite>.</p></li>
+<li><p>Processes each pair individually and joins them back into a string.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="structured_text.info">
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.info" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.parse_text">
@@ -179,6 +199,33 @@ The input string must be in a format compatible with Python’s <cite>ast.litera
 <li><p>Parsing is performed using <cite>ast.literal_eval</cite> for security and compatibility.</p></li>
 <li><p>Nested structures (e.g., lists or dictionaries) are handled recursively.</p></li>
 <li><p>Scalar values are converted to the <cite>target_type</cite> if specified.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="structured_text.rebuild_dict">
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">rebuild_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#rebuild_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.rebuild_dict" title="Link to this definition"></a></dt>
+<dd><p>Rebuild a dictionary-like string, ensuring proper formatting with quoted keys and values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>txt</strong> (<em>str</em>) – The input string containing key-value pairs in simplified dictionary-like format.
+Example: “key1: value1, key2: value2”</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>An AST formatted dictionary string with single quotes around keys and values.</dt><dd><p>Example: “{‘key1’: ‘value1’, ‘key2’: ‘value2’}”</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Ensures the input text is enclosed in curly braces <cite>{}</cite>.</p></li>
+<li><p>Utilizes <cite>format_key_value_pairs</cite> to process individual key-value pairs.</p></li>
 </ul>
 </dd></dl>
 
@@ -244,6 +291,11 @@ formatting for compatibility with evaluation and representation needs.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="structured_text.warn">
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.warn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 
@@ -251,7 +303,6 @@ formatting for compatibility with evaluation and representation needs.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="yaml_config.html" class="btn btn-neutral float-left" title="yaml_config module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="readme.html" class="btn btn-neutral float-right" title="Readme" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

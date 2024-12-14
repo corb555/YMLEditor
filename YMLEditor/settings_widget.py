@@ -41,11 +41,11 @@ class SettingsWidget(QWidget):
     - Displays settings based on the user-supplied layout which defines:
       type of control (text field, combo box, etc.) and the key for retrieving
       each field. See project readme for a list of supported widgets and options.
-    - Handles changes made to widgets by syncing the updated values back to `Config` data.
+    - Changes made to widgets are synched back to the `Config` data.
     - `Config` supports `get`, `set` data and `load`, and `save` to the YAML config file.
     - Validates user input according to provided rules (regular expressions).
     - Highlights the entry if there is an error.
-    - Supports full redisplay if a specified configuration key changes.
+    - Supports callback when a specified configuration key changes.
     - Supports data fields that are lists, dictionaries, or scalar (int, string, etc.)
     - Does not support fields that are complex nested data structures.
     - Supports switching between multiple formats (e.g., "basic" vs "expert" format).
@@ -54,21 +54,24 @@ class SettingsWidget(QWidget):
         config (Config): The config file handler object.  Supports get, set, save, load.
         formats (dict): Defines display format and input validation rules for each field. See
         project readme for details.
-        redisplay_keys (list of str): A list of keys that trigger a full redisplay of the UI
+        trigger_keys (list of str): A list of keys that trigger a full redisplay of the UI
 
     **Methods**:
     """
 
-    def __init__(self, config, formats, mode, redisplay_keys=None, verbose=1):
+    def __init__(self, config, formats, mode, trigger_keys=None, callback=None, verbose=1, text_edit_height=60):
         """
-        Initialize the settings widget.
+        Initialize
 
         Args:
             config (Config): Configuration object to load, update, and store settings.
             formats (dict): Display formats for different modes.
             mode (str): Used to select between multiple layout formats.
-            redisplay_keys (List): Updates to these keys will trigger a full redisplay.
+            trigger_keys (List): Updates to these keys will trigger a callback.  If no callback is provided,
+            this will simply do a redisplay.
+            callback (function): Callback function which will be called when user changes item in trigger_keys.
             verbose (int): The verbosity level. Defaults to 1.
+            text_edit_height (int): The height of any text edit fields created.
         """
         super().__init__()
 
@@ -79,8 +82,10 @@ class SettingsWidget(QWidget):
         self.validate_format(formats, mode)
         self.ignore_changes = False
         self.is_loaded = False
-        self.redisplay_keys = redisplay_keys  # Keys that trigger full UI redisplay
+        self.trigger_keys = trigger_keys  # Keys that trigger callback
         self.config_widgets = []
+        self.text_edit_height = text_edit_height
+        self.callback = callback
 
         # Set up the top-level layout once
         self.main_layout = QVBoxLayout(self)
@@ -130,7 +135,7 @@ class SettingsWidget(QWidget):
                 # Create specified ConfigWidget
                 config_item = ItemWidget(
                     self.config, widget_type, None, options, self.on_change, width, data_key,
-                    verbose=self.verbose
+                    verbose=self.verbose, text_edit_height=self.text_edit_height
                 )
 
                 self.config_widgets.append(config_item)
@@ -219,18 +224,20 @@ class SettingsWidget(QWidget):
 
     def on_change(self, key, value):
         """
-        Do full redisplay if key is in redisplay_keys.  Called by ItemWidget
+        Call callback if key is in trigger_keys.  Called by ItemWidget
         after it has updated data from a user edit.
 
         Args:
             key (str): The key that changed.
             value (str): The value that changed.
-
         """
-        # Force full redisplay if the key is in the redisplay list
-        if key and self.redisplay_keys is not None:
-            if key in self.redisplay_keys:
-                self.display()
+        # Call callback if key is in trigger_keys.
+        if key and self.trigger_keys is not None:
+            if key in self.trigger_keys:
+                if self.callback:
+                    self.callback(key, value)
+                else:
+                    self.display()
 
     def validate_format(self, formats, mode):
         """

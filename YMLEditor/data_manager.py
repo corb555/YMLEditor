@@ -56,6 +56,7 @@ class DataManager(ABC):
         self.handler = DataHandler(verbose)  # the handler for our data type
         self.max_snapshots = 6  # Maximum number of snapshots to retain for undo
         self.proxy_mapping = {}  # Dictionary to map keys to proxy files
+        self.error = ""
 
     @abstractmethod
     def _load_data(self, f) -> Union[Dict, List]:
@@ -108,6 +109,7 @@ class DataManager(ABC):
             IOError: If there is an issue reading the file.
             ValueError: If the file contents are invalid.
         """
+        self.error = ""
         # Clear any proxy keys
         self.proxy_mapping = {}  # Dictionary to map keys to proxy files
         self.file_path = path
@@ -119,13 +121,14 @@ class DataManager(ABC):
                 self.unsaved_changes = False
             return True
         except FileNotFoundError:
-            self.warn(f"Error: File not found: {path}")
+            self.error = f"Error: File not found: {path}"
         except IOError as e:
-            self.warn(f"Error: File: {path}\n{e}")
+            self.error = f"Error: File: {path}\n{e}"
         except ValueError as e:
-            self.warn(f"Error: Invalid file contents using {self.__class__.__name__}: {path}\n{e}")
+            self.error = f"Error: Invalid file contents for {self.__class__.__name__}: {path}\n{e}"
         except Exception as e:
-            self.warn(f"Error loading:  {self.__class__.__name__}: {path}\n{e}")
+            self.error = f"Error loading:  {self.__class__.__name__}: {path}\n{e}"
+        print(self.error)
         return False
 
     def get_open_mode(self, write=False):
@@ -153,6 +156,7 @@ class DataManager(ABC):
         Raises:
             ValueError: If the file path or data is None.
         """
+        self.error = ""
         if self.file_path is None:
             raise ValueError("Save Error: File path: cannot be None")
 
@@ -167,7 +171,8 @@ class DataManager(ABC):
                 self.unsaved_changes = False
                 return True
             except Exception as e:
-                self.warn(f"Error saving: {self.file_path}\n{e}")
+                self.error = f"Error saving: {self.file_path}\n{e}"
+                print(self.error)
                 return False
 
     def set(self, key, value):

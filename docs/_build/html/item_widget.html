@@ -54,9 +54,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#item_widget.ItemWidget.rgx"><code class="docutils literal notranslate"><span class="pre">ItemWidget.rgx</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#item_widget.ItemWidget._data_type"><code class="docutils literal notranslate"><span class="pre">ItemWidget._data_type</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#item_widget.ItemWidget.display"><code class="docutils literal notranslate"><span class="pre">ItemWidget.display()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#item_widget.ItemWidget.info"><code class="docutils literal notranslate"><span class="pre">ItemWidget.info()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#item_widget.ItemWidget.set_error_style"><code class="docutils literal notranslate"><span class="pre">ItemWidget.set_error_style()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#item_widget.ItemWidget.set_normal_style"><code class="docutils literal notranslate"><span class="pre">ItemWidget.set_normal_style()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#item_widget.ItemWidget.set_text"><code class="docutils literal notranslate"><span class="pre">ItemWidget.set_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#item_widget.ItemWidget.warn"><code class="docutils literal notranslate"><span class="pre">ItemWidget.warn()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#item_widget.get_text"><code class="docutils literal notranslate"><span class="pre">get_text()</span></code></a></li>
@@ -67,7 +69,6 @@
 <li class="toctree-l2"><a class="reference internal" href="structured_text.html">structured_text module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html">Readme</a></li>
 </ul>
 
         </div>
@@ -99,13 +100,13 @@
 <span id="item-widget-module"></span><h1>item_widget module<a class="headerlink" href="#module-item_widget" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="item_widget.ItemWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">item_widget.</span></span><span class="sig-name descname"><span class="pre">ItemWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_edit_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">90</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/item_widget.html#ItemWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#item_widget.ItemWidget" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">item_widget.</span></span><span class="sig-name descname"><span class="pre">ItemWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combo_rgx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_edit_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'color:</span> <span class="pre">Orange;'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/item_widget.html#ItemWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#item_widget.ItemWidget" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
-<p>A widget for displaying and editing a single field from a config file.</p>
+<p>A configurable widget for displaying and editing a single field from a config file.</p>
 <ul class="simple">
 <li><p>Supports various widget types including editable text, combo boxes, and read-only labels.</p></li>
 <li><p>All user edits are validated and synchronized with the config data.</p></li>
-<li><p>Uses <cite>structured_text</cite> module to parse  text representations of dictionaries and lists.</p></li>
+<li><p>Uses <cite>structured_text</cite> module to parse text representations of dictionaries and lists.</p></li>
 </ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="item_widget.ItemWidget.config">
@@ -187,6 +188,11 @@ Prints a warning if our key is not found in config data.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="item_widget.ItemWidget.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/item_widget.html#ItemWidget.info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#item_widget.ItemWidget.info" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="item_widget.ItemWidget.set_error_style">
 <span class="sig-name descname"><span class="pre">set_error_style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/item_widget.html#ItemWidget.set_error_style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#item_widget.ItemWidget.set_error_style" title="Link to this definition"></a></dt>
 <dd><p>Apply an error style to the widget.</p>
@@ -224,6 +230,11 @@ Prints a warning if our key is not found in config data.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="item_widget.ItemWidget.warn">
+<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/item_widget.html#ItemWidget.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#item_widget.ItemWidget.warn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

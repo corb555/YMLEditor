@@ -6,11 +6,11 @@
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/docs/_build/doctrees" />
       <excludeFolder url="file://$MODULE_DIR$/docs/_build/html/_static" />
-      <excludeFolder url="file://$MODULE_DIR$/docs/_static" />
-      <excludeFolder url="file://$MODULE_DIR$/docs/_templates" />
       <excludeFolder url="file://$MODULE_DIR$/YMLEditor.egg-info" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/docs/_build/_static" />
+      <excludeFolder url="file://$MODULE_DIR$/docs/_build/_templates" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.12" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

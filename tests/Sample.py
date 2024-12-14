@@ -12,11 +12,10 @@ the SettingsWidget for displaying and editing settings, and provides a save butt
 and an undo button.
 """
 
-def create_window(settings):
+def create_window(wn, settings):
     """
     Creates the main application window with the settings widget.
     """
-    w = QWidget()
     layout = QVBoxLayout()
 
     # Create a horizontal button layout for save and undo buttons
@@ -41,8 +40,7 @@ def create_window(settings):
     vertical_spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
     layout.addItem(vertical_spacer)
 
-    w.setLayout(layout)
-    return w
+    wn.setLayout(layout)
 
 
 if __name__ == "__main__":
@@ -79,19 +77,18 @@ if __name__ == "__main__":
     if not success:
         sys.exit()
 
+    w = QWidget()
+
     # Create a settings widget to display and edit the YAML settings with our format
     settings_widget = SettingsWidget(config, formatsYAML, "layout1", ["HOME"])
 
     # Create main window and add the settings_widget and buttons
-    window = create_window(settings_widget)
+    create_window(w, settings_widget)
 
     # Display the settings
     settings_widget.display()
-    window.show()
+    w.show()
 
     # Start QT event loop
     sys.exit(app.exec())
-
-
-
 
