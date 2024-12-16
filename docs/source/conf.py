@@ -13,9 +13,6 @@ sys.path.insert(0, os.path.abspath('../../YMLEditor'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'YMLEditor'
-copyright = '2024, corb555'
-author = 'corb555'
-release = '0.11'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

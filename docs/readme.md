@@ -1,12 +1,10 @@
 # Readme
 
-<img width="622" alt="sample" src="https://github.com/corb555/YMLEditor/blob/62749ffe58806449d0adba7040e1157ae4b184c2/images/YMLEditor.png">
+<img width="622" alt="sample" src="https://github.com/corb555/YMLEditor/blob/62749ffe58806449d0adba7040e1157ae4b184c2/images/YMLEditor.png?raw=true">
 
 ## Overview
 
-`YMLEditor` is a package for easily creating editors for simple configuration files.  An implementation 
-for YAML files is included but this can easily be replaced with a
-module that can save and load different file formats such as JSON or TOML.
+`YMLEditor` is a package for easily creating editors for simple configuration files.  
 
 ## Features
 
@@ -40,11 +38,6 @@ To install `YMLEditor`:
 ```bash
 pip install YMLEditor
 ```
-
-### Dependencies
-
-- PyYAML
-- PyQt6
 
 ### Format Layout
 
