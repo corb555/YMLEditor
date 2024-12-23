@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>item_widget &mdash; YMLEditor 0.11 documentation</title>
+  <title>item_widget &mdash; YMLEditor  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=086c1757"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -99,7 +99,6 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">PyQt6.QtWidgets</span> <span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QTextEdit</span>
-
 <span class="kn">from</span> <span class="nn">YMLEditor.structured_text</span> <span class="kn">import</span> <span class="n">to_text</span><span class="p">,</span> <span class="n">data_type</span><span class="p">,</span> <span class="n">parse_text</span><span class="p">,</span> <span class="n">rebuild_dict</span>
 
 
@@ -127,7 +126,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">,</span> <span class="n">initial_value</span><span class="p">,</span> <span class="n">combo_rgx</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">text_edit_height</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">error_style</span> <span class="o">=</span> <span class="s2">&quot;color: Orange;&quot;</span>
+            <span class="n">text_edit_height</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">error_style</span><span class="o">=</span><span class="s2">&quot;color: Orange;&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize</span>
@@ -143,7 +142,9 @@
 <span class="sd">            width (int, optional): Fixed width for the widget. Defaults to 50.</span>
 <span class="sd">            key (str, optional): Key for linking the widget to the config data.</span>
 <span class="sd">            text_edit_height (int, optional): Height for text edit widgets. Defaults to 90.</span>
-<span class="sd">            verbose (int, optional): Verbosity level. 0=silent, 1=warnings, 2=information. Defaults to 1.</span>
+<span class="sd">            verbose (int, optional): Verbosity level. 0=silent, 1=warnings, 2=information.</span>
+<span class="sd">            Defaults to 1.</span>
+<span class="sd">            style (str) : style for the widget</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -156,10 +157,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_widget</span><span class="p">(</span><span class="n">widget_type</span><span class="p">,</span> <span class="n">initial_value</span><span class="p">,</span> <span class="n">combo_rgx</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">text_edit_height</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_create_widget</span><span class="p">(</span><span class="n">widget_type</span><span class="p">,</span> <span class="n">initial_value</span><span class="p">,</span> <span class="n">combo_rgx</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">text_edit_height</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_create_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">,</span> <span class="n">initial_value</span><span class="p">,</span> <span class="n">combo_rgx</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">text_edit_height</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">,</span> <span class="n">initial_value</span><span class="p">,</span> <span class="n">combo_rgx</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">text_edit_height</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a specific type of widget based on the provided parameters (private)</span>
 
@@ -169,6 +169,7 @@
 <span class="sd">            combo_rgx (Union[List[str], str], optional): Combo options or validation regex.</span>
 <span class="sd">            width (int): Width of the widget.</span>
 <span class="sd">            text_edit_height (int): Height for text edit widgets.</span>
+<span class="sd">            style (str) : style for the widget</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">widget_type</span> <span class="o">==</span> <span class="s2">&quot;combo&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">widget</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
@@ -192,6 +193,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">widget</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported widget type: </span><span class="si">{</span><span class="n">widget_type</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">style</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">widget_type</span> <span class="o">!=</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
@@ -264,6 +267,7 @@
         <span class="c1"># Update config and apply styles based on validation</span>
         <span class="k">if</span> <span class="n">invalid</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;parse error for </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">set_error_style</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -286,7 +290,9 @@
 <span class="sd">            message (str, optional): Optional error message to display.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">widget</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;originalStyle&quot;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
             <span class="n">widget</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s2">&quot;originalStyle&quot;</span><span class="p">,</span> <span class="n">widget</span><span class="o">.</span><span class="n">styleSheet</span><span class="p">())</span>
+
         <span class="n">widget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">error_style</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
             <span class="n">widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
@@ -302,7 +308,7 @@
 <span class="sd">            widget (QWidget): The widget to restore.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">original_style</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;originalStyle&quot;</span><span class="p">)</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;color: Silver;&quot;</span><span class="p">)</span></div>
+        <span class="n">widget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="n">original_style</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ItemWidget.set_text">
@@ -353,7 +359,6 @@
 
                 <span class="n">str_value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">processed_tokens</span><span class="p">)</span>  <span class="c1"># Reassemble tokens</span>
 
-
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">QTextEdit</span><span class="p">):</span>
                 <span class="n">widget</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="n">str_value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -399,8 +404,6 @@
         <span class="k">return</span> <span class="n">widget</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">widget</span><span class="o">.</span><span class="n">text</span><span class="p">()</span></div>
 
-
-
 </pre></div>
 
            </div>
@@ -410,7 +413,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, corb555.</p>
+    <p>&#169; Copyright .</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

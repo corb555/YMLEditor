@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>data_manager module &mdash; YMLEditor 0.11 documentation</title>
+  <title>data_manager module &mdash; YMLEditor  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=086c1757"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -293,8 +293,8 @@ undo.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.add_proxy">
 <span class="sig-name descname"><span class="pre">add_proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_update_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.add_proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.add_proxy" title="Link to this definition"></a></dt>
-<dd><p>Add a proxy file and its associated update keys.
-If any of these keys are updated, they will trigger a touch to this proxy_file.
+<dd><p>Add a proxy file and its associated keys.
+If any of these keys are updated, the proxy_file will be touched.
 This can be used to improve the granularity of dependencies for build management systems.
 The build system can set a dependency on the proxy_file which is only updated for a subset
 of fields in the config file rather than rebuilding from any change to the config file.</p>
@@ -508,7 +508,7 @@ The oldest is always retained for return to initial state.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, corb555.</p>
+    <p>&#169; Copyright .</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

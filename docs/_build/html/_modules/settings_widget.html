@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>settings_widget &mdash; YMLEditor 0.11 documentation</title>
+  <title>settings_widget &mdash; YMLEditor  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=086c1757"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -100,7 +100,6 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">PyQt6.QtWidgets</span> <span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QGridLayout</span><span class="p">,</span> <span class="n">QSpacerItem</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="p">,</span> <span class="n">QVBoxLayout</span>
-
 <span class="kn">from</span> <span class="nn">YMLEditor.item_widget</span> <span class="kn">import</span> <span class="n">ItemWidget</span>
 
 
@@ -131,7 +130,10 @@
 <span class="sd">    **Methods**:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">formats</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">trigger_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">text_edit_height</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">formats</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">trigger_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">text_edit_height</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">error_style</span><span class="o">=</span><span class="s2">&quot;color: orange;&quot;</span>
+            <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize</span>
 
@@ -139,17 +141,21 @@
 <span class="sd">            config (Config): Configuration object to load, update, and store settings.</span>
 <span class="sd">            formats (dict): Display formats for different modes.</span>
 <span class="sd">            mode (str): Used to select between multiple layout formats.</span>
-<span class="sd">            trigger_keys (List): Updates to these keys will trigger a callback.  If no callback is provided,</span>
+<span class="sd">            trigger_keys (List): Updates to these keys will trigger a callback.  If no callback</span>
+<span class="sd">            is provided,</span>
 <span class="sd">            this will simply do a redisplay.</span>
-<span class="sd">            callback (function): Callback function which will be called when user changes item in trigger_keys.</span>
+<span class="sd">            callback (function): Callback function which will be called when user changes item in</span>
+<span class="sd">            trigger_keys.</span>
 <span class="sd">            verbose (int): The verbosity level. Defaults to 1.</span>
 <span class="sd">            text_edit_height (int): The height of any text edit fields created.</span>
+<span class="sd">            error_style (str): Text color for validation errors. Defaults to &quot;orange&quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">formats</span> <span class="o">=</span> <span class="n">formats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_style</span> <span class="o">=</span> <span class="n">error_style</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>  <span class="c1"># Select which format within formats to use</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validate_format</span><span class="p">(</span><span class="n">formats</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_changes</span> <span class="o">=</span> <span class="kc">False</span>
@@ -195,7 +201,8 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If &#39;self.formats&#39; is not set or is not a dictionary.</span>
 <span class="sd">            KeyError: If the key in &#39;self.mode&#39; is not found in &#39;self.formats&#39;.</span>
-<span class="sd">            Exception: If an error occurs while setting up a widget, with details on the row and key.</span>
+<span class="sd">            Exception: If an error occurs while setting up a widget, with details on the row and</span>
+<span class="sd">            key.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Clear the grid layout without removing the top-level layout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear_layout</span><span class="p">()</span>
@@ -205,12 +212,18 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="p">(</span><span class="n">data_key</span><span class="p">,</span> <span class="n">format_row</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-                <span class="n">label_text</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">format_row</span>
+                <span class="c1"># Unpack format_row with support for an optional &quot;style&quot; element</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_row</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="n">label_text</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="n">format_row</span>
+                    <span class="n">style</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">format_row</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="n">label_text</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="n">format_row</span>
 
                 <span class="c1"># Create specified ConfigWidget</span>
                 <span class="n">config_item</span> <span class="o">=</span> <span class="n">ItemWidget</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">widget_type</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_change</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">data_key</span><span class="p">,</span>
-                    <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span> <span class="n">text_edit_height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">text_edit_height</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span> <span class="n">text_edit_height</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">text_edit_height</span><span class="p">,</span>
+                    <span class="n">error_style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">error_style</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">style</span>
                 <span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">config_widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">config_item</span><span class="p">)</span>
@@ -360,7 +373,7 @@
         <span class="c1"># Validate the entries in the format</span>
         <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">format_def</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="c1"># Validate format line</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Format for key &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is invalid at row </span><span class="si">{</span><span class="n">row</span><span class="si">}</span><span class="s2">. Expected tuple:  &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;(label_text, widget_type, options, width), but got: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -376,7 +389,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2024, corb555.</p>
+    <p>&#169; Copyright .</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

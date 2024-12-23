@@ -128,7 +128,6 @@ class DataManager(ABC):
             self.error = f"Error: Invalid file contents for {self.__class__.__name__}: {path}\n{e}"
         except Exception as e:
             self.error = f"Error loading:  {self.__class__.__name__}: {path}\n{e}"
-        print(self.error)
         return False
 
     def get_open_mode(self, write=False):
@@ -172,7 +171,6 @@ class DataManager(ABC):
                 return True
             except Exception as e:
                 self.error = f"Error saving: {self.file_path}\n{e}"
-                print(self.error)
                 return False
 
     def set(self, key, value):
@@ -265,7 +263,6 @@ class DataManager(ABC):
 
         self.unsaved_changes = True  # Data has been modified
 
-
     def snapshot_push(self):
         """
         Push the current state of the data to snapshot stack for undo functionality.
@@ -325,8 +322,8 @@ class DataManager(ABC):
 
     def add_proxy(self, proxy_file, proxy_update_keys):
         """
-        Add a proxy file and its associated update keys.
-        If any of these keys are updated, they will trigger a touch to this proxy_file.
+        Add a proxy file and its associated keys.
+        If any of these keys are updated, the proxy_file will be touched.
         This can be used to improve the granularity of dependencies for build management systems.
         The build system can set a dependency on the proxy_file which is only updated for a subset
         of fields in the config file rather than rebuilding from any change to the config file.
@@ -353,7 +350,10 @@ class DataManager(ABC):
         Returns:
             str or None: The proxy file associated with the key, or None if not found.
         """
-        return self.proxy_mapping.get(key)
+        key = self.handler.replace_indirect(self._data, key)
+
+        val = self.proxy_mapping.get(key)
+        return val
 
     def warn(self, message):
         if self.verbose > 0:
@@ -405,7 +405,6 @@ class DataHandler(ABC):
             raise IndexError(f"Index {idx} is out of range for insertion.")
         data_list.insert(idx, item)
 
-
     def delete(self, data: Union[Dict, list], idx: Union[str, int]) -> None:
         """
         Delete an item from a dictionary or list.
@@ -444,7 +443,7 @@ class DataHandler(ABC):
 
     def _access_item(
             self, data: Union[Dict, list], key: str, value: Any = None, set_item: bool = False
-            ) -> Any:
+    ) -> Any:
         """
         Internal method for getting or setting values in nested data structures.
         """
@@ -468,7 +467,6 @@ class DataHandler(ABC):
             else:
                 raise TypeError("Unsupported container type.")
         except (KeyError, IndexError, ValueError, TypeError) as e:
-            self.warn(f"Error {'setting' if set_item else 'getting'} key '{key}': {e}")
             return None
 
     def _navigate_hierarchy(self, data: Union[Dict, List], key: str, create_missing: bool = False):
@@ -518,7 +516,6 @@ class DataHandler(ABC):
                 raise TypeError(f"Cannot navigate through {type(target).__name__}.")
 
         return target, keys[-1]
-
 
     def items(self, data: Union[Dict, list]) -> Iterator:
         """Return an iterator over key-value or index-value pairs."""

@@ -30,7 +30,6 @@
 import os
 
 import yaml
-
 from YMLEditor.data_manager import DataManager
 
 

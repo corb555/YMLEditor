@@ -30,7 +30,6 @@
 from typing import List
 
 from PyQt6.QtWidgets import QWidget, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QVBoxLayout
-
 from YMLEditor.item_widget import ItemWidget
 
 
@@ -59,7 +58,10 @@ class SettingsWidget(QWidget):
     **Methods**:
     """
 
-    def __init__(self, config, formats, mode, trigger_keys=None, callback=None, verbose=1, text_edit_height=60):
+    def __init__(
+            self, config, formats, mode, trigger_keys=None, callback=None, verbose=0,
+            text_edit_height=60, error_style="color: orange;"
+            ):
         """
         Initialize
 
@@ -67,17 +69,21 @@ class SettingsWidget(QWidget):
             config (Config): Configuration object to load, update, and store settings.
             formats (dict): Display formats for different modes.
             mode (str): Used to select between multiple layout formats.
-            trigger_keys (List): Updates to these keys will trigger a callback.  If no callback is provided,
+            trigger_keys (List): Updates to these keys will trigger a callback.  If no callback
+            is provided,
             this will simply do a redisplay.
-            callback (function): Callback function which will be called when user changes item in trigger_keys.
+            callback (function): Callback function which will be called when user changes item in
+            trigger_keys.
             verbose (int): The verbosity level. Defaults to 1.
             text_edit_height (int): The height of any text edit fields created.
+            error_style (str): Text color for validation errors. Defaults to "orange".
         """
         super().__init__()
 
         self.config = config
         self.verbose = verbose
         self.formats = formats
+        self.error_style = error_style
         self._mode = mode  # Select which format within formats to use
         self.validate_format(formats, mode)
         self.ignore_changes = False
@@ -120,7 +126,8 @@ class SettingsWidget(QWidget):
         Raises:
             ValueError: If 'self.formats' is not set or is not a dictionary.
             KeyError: If the key in 'self.mode' is not found in 'self.formats'.
-            Exception: If an error occurs while setting up a widget, with details on the row and key.
+            Exception: If an error occurs while setting up a widget, with details on the row and
+            key.
         """
         # Clear the grid layout without removing the top-level layout
         self.clear_layout()
@@ -130,12 +137,18 @@ class SettingsWidget(QWidget):
 
         try:
             for row, (data_key, format_row) in enumerate(fmt.items()):
-                label_text, widget_type, options, width = format_row
+                # Unpack format_row with support for an optional "style" element
+                if len(format_row) == 4:
+                    label_text, widget_type, options, width = format_row
+                    style = None
+                elif len(format_row) == 5:
+                    label_text, widget_type, options, width, style = format_row
 
                 # Create specified ConfigWidget
                 config_item = ItemWidget(
                     self.config, widget_type, None, options, self.on_change, width, data_key,
-                    verbose=self.verbose, text_edit_height=self.text_edit_height
+                    verbose=self.verbose, text_edit_height=self.text_edit_height,
+                    error_style=self.error_style, style=style
                 )
 
                 self.config_widgets.append(config_item)
@@ -268,7 +281,7 @@ class SettingsWidget(QWidget):
         # Validate the entries in the format
         for row, (key, value) in enumerate(format_def.items()):
             # Validate format line
-            if not isinstance(value, tuple) or len(value) != 4:
+            if not isinstance(value, tuple):
                 raise ValueError(
                     f"Format for key '{key}' is invalid at row {row}. Expected tuple:  "
                     f"(label_text, widget_type, options, width), but got: {value}"

@@ -77,10 +77,8 @@ def to_text(item, normalize=False):
     """
     # Handle dictionaries by converting each key-value pair into a formatted string
     if isinstance(item, dict):
-        formatted_pairs = [
-            f"'{key}': {to_text(val if val is not None and val != '' else '', True)}"
-            for key, val in item.items()
-        ]
+        formatted_pairs = [f"'{key}': {to_text(val if val is not None and val != '' else '', True)}"
+            for key, val in item.items()]
         result = "{" + ", ".join(formatted_pairs) + "}"
         return result
 
@@ -277,6 +275,7 @@ def _parse_text(text, target_type=None, rgx=None):
         info(f"parsing error4 for '{text}'")
         return True, None
 
+
 def rebuild_dict(txt):
     """
     Rebuild a dictionary-like string, ensuring proper formatting with quoted keys and values.
@@ -437,9 +436,10 @@ def data_type(item):
     """
     return type(item)
 
-def warn( text):
+
+def warn(text):
     pass
+
 
 def info(text):
     pass
-

@@ -29,7 +29,6 @@ from functools import partial
 from typing import Union, List
 
 from PyQt6.QtWidgets import QWidget, QLabel, QComboBox, QLineEdit, QSizePolicy, QTextEdit
-
 from YMLEditor.structured_text import to_text, data_type, parse_text, rebuild_dict
 
 
@@ -55,7 +54,7 @@ class ItemWidget(QWidget):
 
     def __init__(
             self, config, widget_type, initial_value, combo_rgx, callback, width=50, key=None,
-            text_edit_height=60, verbose=1, error_style = "color: Orange;"
+            text_edit_height=60, verbose=1, error_style="color: Orange;", style=None
     ):
         """
         Initialize
@@ -71,7 +70,9 @@ class ItemWidget(QWidget):
             width (int, optional): Fixed width for the widget. Defaults to 50.
             key (str, optional): Key for linking the widget to the config data.
             text_edit_height (int, optional): Height for text edit widgets. Defaults to 90.
-            verbose (int, optional): Verbosity level. 0=silent, 1=warnings, 2=information. Defaults to 1.
+            verbose (int, optional): Verbosity level. 0=silent, 1=warnings, 2=information.
+            Defaults to 1.
+            style (str) : style for the widget
         """
         super().__init__()
 
@@ -84,10 +85,9 @@ class ItemWidget(QWidget):
         self._is_valid = False
         self._data_type = None
         self.verbose = verbose
+        self._create_widget(widget_type, initial_value, combo_rgx, width, text_edit_height, style)
 
-        self._create_widget(widget_type, initial_value, combo_rgx, width, text_edit_height)
-
-    def _create_widget(self, widget_type, initial_value, combo_rgx, width, text_edit_height):
+    def _create_widget(self, widget_type, initial_value, combo_rgx, width, text_edit_height, style):
         """
         Create a specific type of widget based on the provided parameters (private)
 
@@ -97,6 +97,7 @@ class ItemWidget(QWidget):
             combo_rgx (Union[List[str], str], optional): Combo options or validation regex.
             width (int): Width of the widget.
             text_edit_height (int): Height for text edit widgets.
+            style (str) : style for the widget
         """
         if widget_type == "combo":
             self.widget = QComboBox()
@@ -120,6 +121,8 @@ class ItemWidget(QWidget):
             self.widget = QLabel()
         else:
             raise TypeError(f"Unsupported widget type: {widget_type} for {self.key}")
+        if style:
+            self.widget.setStyleSheet(style)
 
         if widget_type != "label":
             self.widget.setObjectName(self.key)
@@ -189,6 +192,7 @@ class ItemWidget(QWidget):
         # Update config and apply styles based on validation
         if invalid:
             self.warn(f"parse error for {text}")
+
             self.set_error_style(widget)
         else:
             try:
@@ -209,7 +213,9 @@ class ItemWidget(QWidget):
             message (str, optional): Optional error message to display.
         """
         if not widget.property("originalStyle"):
+            name = widget.objectName()
             widget.setProperty("originalStyle", widget.styleSheet())
+
         widget.setStyleSheet(self.error_style)
         if message:
             widget.setText(message)
@@ -222,7 +228,7 @@ class ItemWidget(QWidget):
             widget (QWidget): The widget to restore.
         """
         original_style = widget.property("originalStyle")
-        widget.setStyleSheet("color: Silver;")
+        widget.setStyleSheet(original_style)
 
     def set_text(self, widget, data):
         """
@@ -270,7 +276,6 @@ class ItemWidget(QWidget):
 
                 str_value = ", ".join(processed_tokens)  # Reassemble tokens
 
-
             if isinstance(widget, QTextEdit):
                 widget.setPlainText(str_value)
             else:
@@ -305,5 +310,3 @@ def get_text(widget):
     elif isinstance(widget, QTextEdit):
         return widget.toPlainText()
     return widget.text()
-
-
