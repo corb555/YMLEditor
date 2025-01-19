@@ -28,7 +28,19 @@
 from functools import partial
 from typing import Union, List
 
-from PyQt6.QtWidgets import QWidget, QLabel, QComboBox, QLineEdit, QSizePolicy, QTextEdit
+# Use PySide for imports and fall back to PyQt
+try:
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QWidget, QLabel, QComboBox, QLineEdit, QSizePolicy, QTextEdit, QCheckBox, QSlider, \
+        QDoubleSpinBox
+    print("PySide6 imported")
+except ImportError:
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtWidgets import QWidget, QLabel, QComboBox, QLineEdit, QSizePolicy, QTextEdit, QCheckBox, QSlider, \
+        QDoubleSpinBox
+    print("PyQt6 imported")
+
+
 from YMLEditor.structured_text import to_text, data_type, parse_text, rebuild_dict
 
 
@@ -36,18 +48,8 @@ class ItemWidget(QWidget):
     """
     A configurable widget for displaying and editing a single field from a config file.
 
-    - Supports various widget types including editable text, combo boxes, and read-only labels.
+    - Supports various widget types including editable text, combo boxes, etc.  See readme for details.
     - All user edits are validated and synchronized with the config data.
-    - Uses `structured_text` module to parse text representations of dictionaries and lists.
-
-    Attributes:
-        config(Config): The config file object.  Must support get, set, save, load.
-        widget_type (str): The type of widget ("text_edit", "line_edit", "read_only", "label",
-        or "combo_box").
-        key (str): Key for the field in the config data.
-        error_style (str):  style for indicating an error.
-        rgx (str): Regex pattern for validating text fields. Set in options parameter.
-        _data_type (type) : data type of the item
 
     **Methods**:
     """
@@ -57,7 +59,7 @@ class ItemWidget(QWidget):
             text_edit_height=60, verbose=1, error_style="color: Orange;", style=None
     ):
         """
-        Initialize
+        Init
 
         Args:
             config(Config): Configuration handler to synchronize data.
@@ -65,81 +67,29 @@ class ItemWidget(QWidget):
                 ("text_edit", "line_edit", "read_only", "combo", "label").
             initial_value (str): Initial value to populate the widget.
             combo_rgx (Union[List[str], str]): Dropdown options for combo boxes or
-                regex for validating text fields.
+                regex for validating text fields or tuple with min/max for a slider
             callback (callable): Function to call when the widget value changes.
             width (int, optional): Fixed width for the widget. Defaults to 50.
             key (str, optional): Key for linking the widget to the config data.
             text_edit_height (int, optional): Height for text edit widgets. Defaults to 90.
             verbose (int, optional): Verbosity level. 0=silent, 1=warnings, 2=information.
-            Defaults to 1.
+                Defaults to 1.
+            error_style (str, optional): style for indicating an error.
             style (str) : style for the widget
         """
         super().__init__()
 
-        self.error_style = error_style
-        self.rgx = None
-        self.widget_type = widget_type
-        self.callback = callback
-        self.key = key
-        self.config = config
+        self._error_style = error_style
+        self._rgx = None
+        self._widget_type = widget_type
+        self._callback = callback
+        self._key = key
+        self._config = config
         self._is_valid = False
         self._data_type = None
-        self.verbose = verbose
+        self._verbose = verbose
+
         self._create_widget(widget_type, initial_value, combo_rgx, width, text_edit_height, style)
-
-    def _create_widget(self, widget_type, initial_value, combo_rgx, width, text_edit_height, style):
-        """
-        Create a specific type of widget based on the provided parameters (private)
-
-        Args:
-            widget_type (str): The type of widget to create.
-            initial_value (str): The initial value for the widget.
-            combo_rgx (Union[List[str], str], optional): Combo options or validation regex.
-            width (int): Width of the widget.
-            text_edit_height (int): Height for text edit widgets.
-            style (str) : style for the widget
-        """
-        if widget_type == "combo":
-            self.widget = QComboBox()
-            self.widget.addItems(combo_rgx)
-            self.widget.setCurrentText(initial_value)
-        elif widget_type == "text_edit":
-            self.widget = QTextEdit(str(initial_value))
-            self.widget.setFixedHeight(text_edit_height)
-            # Disable drag-and-drop functionality
-            self.widget.setAcceptDrops(False)
-            self.rgx = combo_rgx
-        elif widget_type == "line_edit":
-            self.widget = QLineEdit(str(initial_value))
-            self.widget.setAcceptDrops(False)
-            self.rgx = combo_rgx
-        elif widget_type == "read_only":
-            self.widget = QLineEdit(str(initial_value))
-            self.rgx = combo_rgx
-            self.widget.setReadOnly(True)
-        elif widget_type == "label":
-            self.widget = QLabel()
-        else:
-            raise TypeError(f"Unsupported widget type: {widget_type} for {self.key}")
-        if style:
-            self.widget.setStyleSheet(style)
-
-        if widget_type != "label":
-            self.widget.setObjectName(self.key)
-            if isinstance(self.widget, QComboBox):
-                self.widget.currentIndexChanged.connect(
-                    partial(self._on_widget_changed, self.widget)
-                )
-            else:
-                self.widget.textChanged.connect(partial(self._on_widget_changed, self.widget))
-
-        self.widget.setProperty("originalStyle", self.widget.styleSheet())
-        if isinstance(self.widget, QLineEdit):
-            self.widget.setFixedWidth(width)
-        else:
-            self.widget.setMinimumWidth(width)
-
-        self.widget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
     def display(self):
         """
@@ -151,16 +101,17 @@ class ItemWidget(QWidget):
             if self.widget:
                 key = self.widget.objectName()
                 if key:
-                    val = self.config.get(key) or ""
+                    val = self._config.get(key) or ""
                     if not self._data_type:
                         self._data_type = data_type(val)
                     self.set_text(self.widget, val)
+
         except Exception as e:
             key = key or "None"
             val = val or "None"
-            self.warn(f"Widget key '{key}': {e} val '{val}'")
+            self.warn(f"WARN:  key '{key}': {e} val '{val}'")
 
-    def _on_widget_changed(self, widget):
+    def _on_widget_changed(self, widget, *args):
         """
         Handle changes to the widget's value: validate text. If valid,
         update the config data. Set style appropriately.
@@ -182,27 +133,25 @@ class ItemWidget(QWidget):
                     if text and (not text.startswith("[") or not text.endswith("]")):
                         text = f"[{text}]"
             except Exception as e:
-                self.warn(f"Could not rebuild '{text}'")
+                self.warn(f"Widget get text error. Text is '{text}'")
                 self.set_error_style(widget)
                 return
 
         # Validate the text and parse it
-        invalid, data_value = parse_text(text, self._data_type, self.rgx)
+        invalid, data_value = parse_text(text, self._data_type, self._rgx)
 
         # Update config and apply styles based on validation
         if invalid:
             self.warn(f"parse error for {text}")
-
             self.set_error_style(widget)
         else:
             try:
-                self.config.set(key, data_value)
+                self._config.set(key, data_value)
                 self.set_normal_style(widget)
-                self.info(f"Set '{key}' to '{data_value}'")
             except Exception as e:
                 self.set_error_style(widget)
                 self.info(f"Error setting {text}")
-            self.callback(key, text)
+            self._callback(key, text)
 
     def set_error_style(self, widget, message=None):
         """
@@ -216,7 +165,7 @@ class ItemWidget(QWidget):
             name = widget.objectName()
             widget.setProperty("originalStyle", widget.styleSheet())
 
-        widget.setStyleSheet(self.error_style)
+        widget.setStyleSheet(self._error_style)
         if message:
             widget.setText(message)
 
@@ -230,83 +179,163 @@ class ItemWidget(QWidget):
         original_style = widget.property("originalStyle")
         widget.setStyleSheet(original_style)
 
+    def _create_widget(self, widget_type, initial_value, options, width, text_edit_height, style):
+        """
+        Create a specific type of widget based on the provided parameters (private).
+
+        Args:
+            widget_type (str): The type of widget to create.
+            initial_value (str): The initial value for the widget.
+            options (Union[List, str], optional): Regex for text fields, widget options for others.
+            width (int): Width of the widget.
+            text_edit_height (int): Height for text edit widgets.
+            style (str): Style for the widget.
+        """
+        # Validate options based on widget type
+        if widget_type in ["combo", "slider", "spinbox"] and not isinstance(options, list):
+            raise ValueError(f"Options for '{widget_type}' must be a list. Got: {type(options).__name__}")
+
+        if widget_type == "slider":
+            if len(options) != 2 or not all(isinstance(i, int) for i in options):
+                raise ValueError(
+                    f"Options for 'slider' must be a list of two integers [min, max]. Got: {options}"
+                )
+
+        if widget_type == "spinbox":
+            if len(options) != 4 or not (
+                isinstance(options[0], (int, float)) and
+                isinstance(options[1], (int, float)) and
+                isinstance(options[2], (int, float)) and
+                isinstance(options[3], int)
+            ):
+                raise ValueError(
+                    f"Options for 'spinbox' must be a list of [min (float), max (float), step (float), precision (int)]. "
+                    f"Got: {options}"
+                )
+
+        if widget_type == "combo" and not all(isinstance(i, str) for i in options):
+            raise ValueError(
+                f"Options for 'combo' must be a list of strings. Got: {options}"
+            )
+
+        # Widget creation logic
+        if widget_type == "combo":
+            self.widget = QComboBox()
+            self.widget.addItems(options)
+            self.set_text(self.widget, initial_value)
+            self.widget.currentIndexChanged.connect(partial(self._on_widget_changed, self.widget))
+        elif widget_type == "text_edit":
+            self.widget = QTextEdit(str(initial_value))
+            self.widget.setFixedHeight(text_edit_height)
+            self.widget.setAcceptDrops(False)
+            self._rgx = options
+            self.widget.textChanged.connect(partial(self._on_widget_changed, self.widget))
+        elif widget_type == "line_edit":
+            self.widget = QLineEdit(str(initial_value))
+            self.widget.setAcceptDrops(False)
+            self._rgx = options
+            self.widget.textChanged.connect(partial(self._on_widget_changed, self.widget))
+        elif widget_type == "read_only":
+            self.widget = QLineEdit(str(initial_value))
+            self.widget.setReadOnly(True)
+        elif widget_type == "label":
+            self.widget = QLabel()
+        elif widget_type == "checkbox":
+            self.widget = QCheckBox()
+            self.set_text(self.widget, initial_value)
+            self.widget.stateChanged.connect(partial(self._on_widget_changed, self.widget))
+        elif widget_type == "slider":
+            self.widget = QSlider(Qt.Orientation.Horizontal)
+            self.widget.setMinimum(options[0])
+            self.widget.setMaximum(options[1])
+            self.set_text(self.widget, initial_value)
+            self.widget.valueChanged.connect(partial(self._on_widget_changed, self.widget))
+        elif widget_type == "spinbox":
+            self.widget = QDoubleSpinBox()
+            self.widget.setMinimum(options[0])
+            self.widget.setMaximum(options[1])
+            self.widget.setSingleStep(options[2])
+            self.widget.setDecimals(options[3])
+            self.set_text(self.widget, initial_value)
+            self.widget.valueChanged.connect(partial(self._on_widget_changed, self.widget))
+        else:
+            raise TypeError(f"Unsupported widget type: {widget_type} for {self._key}")
+
+        if widget_type not in ["label"]:
+            self.widget.setObjectName(self._key)
+
+        if style:
+            self.widget.setStyleSheet(style)
+
+        self.widget.setProperty("originalStyle", self.widget.styleSheet())
+        if isinstance(self.widget, QLineEdit):
+            self.widget.setFixedWidth(width)
+        else:
+            self.widget.setMinimumWidth(width)
+
+        self.widget.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+
     def set_text(self, widget, data):
         """
-        Update the widget's text with the provided value.
+        Update the widget's value with the provided value.
 
         Args:
             widget (QWidget): The widget to update.
-            data (str or dict): The data to display in the widget.
+            data (str, int, float, bool, or dict): The data to update in the widget.
         """
-        str_value = to_text(data)
-
-        self.widget.blockSignals(True)  # Block signals.  Don't reprocess widget update
+        self.widget.blockSignals(True)
 
         if isinstance(widget, QComboBox):
-            widget.setCurrentText(str_value)
+            widget.setCurrentText(str(data))
         elif isinstance(widget, (QLineEdit, QTextEdit)):
-            # Remove enclosing braces or brackets, if present
-            if str_value.startswith(("{", "[")) and str_value.endswith(("}", "]")):
-                str_value = str_value[1:-1]
-
-            if widget.isReadOnly():
-                # Process key-value pairs individually
-                tokens = str_value.split(",")  # Split into tokens
-                processed_tokens = []
-
-                for token in tokens:
-                    token = token.strip()  # Trim whitespace
-                    if ":" in token:  # Handle key-value pairs
-                        key, value = map(str.strip, token.split(":", 1))
-
-                        # Remove quotes from key
-                        if key.startswith(("'", '"')) and key.endswith(("'", '"')):
-                            key = key[1:-1]
-
-                        # Process value
-                        if value.startswith(("'", '"')) and value.endswith(("'", '"')):
-                            inner_value = value[1:-1]
-                            if inner_value:  # Non-blank value, remove enclosing quotes
-                                value = inner_value  # Blank values retain their quotes (e.g., '')
-
-                        processed_tokens.append(f"{key}: {value}")
-                    else:
-                        # Handle non key-value tokens (if any)
-                        processed_tokens.append(token)
-
-                str_value = ", ".join(processed_tokens)  # Reassemble tokens
-
-            if isinstance(widget, QTextEdit):
-                widget.setPlainText(str_value)
-            else:
-                widget.setText(str_value)
+            widget.setText(str(data)) if isinstance(widget, QLineEdit) else widget.setPlainText(str(data))
+        elif isinstance(widget, QCheckBox):
+            widget.setChecked(data == '1' or data == 'True')
+        elif isinstance(widget, QSlider):
+            if data:
+                widget.setValue(int(data))
+        elif isinstance(widget, QDoubleSpinBox):
+            if data:
+                widget.setValue(float(data))
         else:
-            self.widget.blockSignals(False)  # Block signals
+            self.widget.blockSignals(False)
             raise TypeError(f"Unsupported widget type for setting value: {type(widget)}")
 
-        self.widget.blockSignals(False)  # Block signals
+        self.widget.blockSignals(False)
 
     def warn(self, text):
-        if self.verbose > 0:
+        if self._verbose > 0:
             print(f"Warning: {text}")
 
     def info(self, text):
-        if self.verbose > 1:
+        if self._verbose > 1:
             print(f"Info: {text}")
-
 
 def get_text(widget):
     """
-    Retrieve the text value from a widget.
+    Retrieve the value from a widget.
 
     Args:
         widget (QWidget): The widget to retrieve the value from.
 
     Returns:
-        str: The current text of the widget.
+        str: The current value of the widget as a string.
     """
     if isinstance(widget, QComboBox):
         return widget.currentText()
     elif isinstance(widget, QTextEdit):
         return widget.toPlainText()
-    return widget.text()
+    elif isinstance(widget, QCheckBox):
+        return "1" if widget.isChecked() else "0"
+    elif isinstance(widget, QSlider):
+        return str(widget.value())
+    elif isinstance(widget, QDoubleSpinBox):
+        # Round to the precision set in the QDoubleSpinBox
+        precision = widget.decimals()
+        value = round(widget.value(), precision)
+        return f"{value:.{precision}f}"  # Format to ensure consistent decimal places
+    elif hasattr(widget, "text"):
+        return widget.text()
+    else:
+        raise TypeError(f"Unsupported widget type: {type(widget)}")

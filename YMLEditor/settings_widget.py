@@ -29,31 +29,31 @@
 #
 from typing import List
 
-from PyQt6.QtWidgets import QWidget, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QVBoxLayout
+# Use PySide for imports and fall back to PyQt
+try:
+    from PySide6.QtWidgets import QWidget, QLabel, QGridLayout, QSpacerItem, QSizePolicy, \
+        QVBoxLayout
+except ImportError:
+    from PyQt6.QtWidgets import QWidget, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QVBoxLayout
+
 from YMLEditor.item_widget import ItemWidget
 
 
 class SettingsWidget(QWidget):
     """
-    Provides a configurable user interface for editing settings in a YAML config file.
+    Provides a configurable user interface for editing settings in a config file.
 
-    - Displays settings based on the user-supplied layout which defines:
+    - Displays settings in a vertical layout based on the supplied row definitions which include:
       type of control (text field, combo box, etc.) and the key for retrieving
       each field. See project readme for a list of supported widgets and options.
     - Changes made to widgets are synched back to the `Config` data.
-    - `Config` supports `get`, `set` data and `load`, and `save` to the YAML config file.
+    - `Config` must support `get`and`set` data and `load` and `save` data to a config file.
     - Validates user input according to provided rules (regular expressions).
     - Highlights the entry if there is an error.
-    - Supports callback when a specified configuration key changes.
+    - Supports callback when specified keys change.
     - Supports data fields that are lists, dictionaries, or scalar (int, string, etc.)
     - Does not support fields that are complex nested data structures.
     - Supports switching between multiple formats (e.g., "basic" vs "expert" format).
-
-    Attributes:
-        config (Config): The config file handler object.  Supports get, set, save, load.
-        formats (dict): Defines display format and input validation rules for each field. See
-        project readme for details.
-        trigger_keys (list of str): A list of keys that trigger a full redisplay of the UI
 
     **Methods**:
     """
@@ -63,20 +63,17 @@ class SettingsWidget(QWidget):
             text_edit_height=60, error_style="color: orange;"
             ):
         """
-        Initialize
+        Init
 
         Args:
             config (Config): Configuration object to load, update, and store settings.
             formats (dict): Display formats for different modes.
             mode (str): Used to select between multiple layout formats.
-            trigger_keys (List): Updates to these keys will trigger a callback.  If no callback
-            is provided,
-            this will simply do a redisplay.
-            callback (function): Callback function which will be called when user changes item in
-            trigger_keys.
-            verbose (int): The verbosity level. Defaults to 1.
-            text_edit_height (int): The height of any text edit fields created.
-            error_style (str): Text color for validation errors. Defaults to "orange".
+            trigger_keys (List[str], optional): Keys that trigger a callback or redisplay. Defaults to None.
+            callback (Callable[[str, Any], None], optional): Function called when user updates any trigger key. Defaults to None.
+            verbose (int, optional): Verbosity level. Defaults to 0.
+            text_edit_height (int, optional): Height for text-edit fields. Defaults to 60.
+            error_style (str, optional): CSS style for validation errors. Defaults to "color: orange;".
         """
         super().__init__()
 
@@ -85,7 +82,7 @@ class SettingsWidget(QWidget):
         self.formats = formats
         self.error_style = error_style
         self._mode = mode  # Select which format within formats to use
-        self.validate_format(formats, mode)
+        self._validate_format(formats, mode)
         self.ignore_changes = False
         self.is_loaded = False
         self.trigger_keys = trigger_keys  # Keys that trigger callback
@@ -98,26 +95,6 @@ class SettingsWidget(QWidget):
         self.grid_layout = QGridLayout()
         self.main_layout.addLayout(self.grid_layout)
         self._setup_ui()
-
-    def set_layout(self, mode):
-        """
-        Change the current display mode and redisplay the UI.
-
-        Args:
-            mode (str): The new mode to switch to.
-
-        Raises:
-            ValueError: If the specified mode is not a valid key in `formats`.
-        """
-        if mode not in self.formats:
-            raise ValueError(f"Invalid mode '{mode}'. Must be one of: {list(self.formats.keys())}")
-
-        self._mode = mode
-        self.format = self.formats[mode]  # Update the format based on the new mode
-
-        self.clear_layout()
-        self._setup_ui()
-        self.display()
 
     def _setup_ui(self):
         """
@@ -142,9 +119,10 @@ class SettingsWidget(QWidget):
                     label_text, widget_type, options, width = format_row
                     style = None
                 elif len(format_row) == 5:
+                    # Optional style element
                     label_text, widget_type, options, width, style = format_row
 
-                # Create specified ConfigWidget
+                # Create specified Widget
                 config_item = ItemWidget(
                     self.config, widget_type, None, options, self.on_change, width, data_key,
                     verbose=self.verbose, text_edit_height=self.text_edit_height,
@@ -166,11 +144,9 @@ class SettingsWidget(QWidget):
                     1, 1, QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum
                 )
                 self.grid_layout.addItem(h_spacer, row, 2)
-
         except Exception as e:
             raise Exception(
                 f"Error setting up widget at row {row} with key '{data_key}'\n"
-                f"Expected a tuple of (label_text, widget_type, options, width), but got "
                 f"{format_row}'.\n"
                 f"{str(e)}"
             ) from e
@@ -179,35 +155,30 @@ class SettingsWidget(QWidget):
         v_spacer = QSpacerItem(1, 1, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.grid_layout.addItem(v_spacer, self.grid_layout.rowCount(), 0, 1, 3)
 
-    def clear_layout(self):
-        """
-        Clear the current settings widget layout.
-        """
-        self._clear_layout(self.grid_layout)
 
-    def _clear_layout(self, layout):
+    def set_layout(self, mode):
         """
-        Remove all items from a layout.
+        Change the current display mode and redisplay the UI.
 
         Args:
-            layout (QLayout): The layout to clear.
+            mode (str): The new mode to switch to.
+
+        Raises:
+            ValueError: If the specified mode is not a valid key in `formats`.
         """
-        self.config_widgets = []
-        self.is_loaded = False
-        while layout.count():
-            item = layout.takeAt(0)
+        if mode not in self.formats:
+            raise ValueError(f"Invalid mode '{mode}'. Must be one of: {list(self.formats.keys())}")
 
-            widget = item.widget()
-            if widget:
-                widget.deleteLater()
+        self._mode = mode
+        self.format = self.formats[mode]  # Update the format based on the new mode
 
-            nested_layout = item.layout()
-            if nested_layout:
-                self._clear_layout(nested_layout)
+        self.clear_layout()
+        self._setup_ui()
+        self.display()
 
     def display(self):
         """
-        Update data from the Config data to the display widgets. Each widget's value is
+        Update the display widgets with latest data from Config. Each widget's value is
         set based on the corresponding configuration key's value.
         """
         self.ignore_changes = True  # Temporarily ignore changes during synchronization
@@ -237,8 +208,8 @@ class SettingsWidget(QWidget):
 
     def on_change(self, key, value):
         """
-        Call callback if key is in trigger_keys.  Called by ItemWidget
-        after it has updated data from a user edit.
+        Called by ItemWidget after it has updated data from a user edit if
+        the key is in `trigger_keys`.
 
         Args:
             key (str): The key that changed.
@@ -252,7 +223,34 @@ class SettingsWidget(QWidget):
                 else:
                     self.display()
 
-    def validate_format(self, formats, mode):
+
+    def clear_layout(self):
+        """
+        Clear the current settings widget layout.
+        """
+        self._clear_layout(self.grid_layout)
+
+    def _clear_layout(self, layout):
+        """
+        Remove all items from a layout.
+
+        Args:
+            layout (QLayout): The layout to clear.
+        """
+        self.config_widgets = []
+        self.is_loaded = False
+        while layout.count():
+            item = layout.takeAt(0)
+
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+
+            nested_layout = item.layout()
+            if nested_layout:
+                self._clear_layout(nested_layout)
+
+    def _validate_format(self, formats, mode):
         """
         Validate the display format
 

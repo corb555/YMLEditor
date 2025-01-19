@@ -46,7 +46,31 @@ class DataManager(ABC):
        """
 
     def __init__(self, verbose=1):
-        """Initialize """
+        """
+        Init
+
+        Args:
+            verbose (int): Verbosity level for logging warnings. Defaults to 1.
+
+        Attributes:
+            verbose (int): Verbosity level for logging and debugging.
+            _data: Internal data structure being managed and manipulated.
+            file_path (str | None): Path to the file associated with the current data.
+            directory (str | None): Directory associated with the current data or file
+                operation.
+            unsaved_changes (bool): Flag to determine whether the data has unsaved
+                modifications.
+            snapshots (list): Stack of snapshots representing the stored states of the
+                `_data` attribute for undo functionality.
+            handler (DataHandler): Handler for the specific data type, used for
+                managing data operations and interactions.
+            max_snapshots (int): Maximum number of snapshots to retain within the
+                `snapshots` stack.
+            proxy_mapping (dict): Dictionary mapping keys to proxy files for certain
+                data operations or file handling.
+            error (str): String representation of the last error or issue encountered
+                during an operation.
+        """
         self.verbose = verbose
         self._data = None
         self.file_path = None
@@ -320,19 +344,23 @@ class DataManager(ABC):
         self.init_data(data)
         self.save()
 
-    def add_proxy(self, proxy_file, proxy_update_keys):
+    def register_proxy_file(self, proxy_file, update_keys):
         """
-        Add a proxy file and its associated keys.
-        If any of these keys are updated, the proxy_file will be touched.
-        This can be used to improve the granularity of dependencies for build management systems.
-        The build system can set a dependency on the proxy_file which is only updated for a subset
-        of fields in the config file rather than rebuilding from any change to the config file.
+        Registers a proxy file and associates it with specific configuration keys.
+
+        A proxy file is updated ("touched") when any of its associated keys are modified.
+        This helps manage build dependencies by ensuring that only relevant changes
+        in the configuration trigger a rebuild of dependent components.
 
         Args:
-            proxy_file (str): The file to touch when any associated key is updated.
-            proxy_update_keys (List[str]): List of keys that trigger a touch to this proxy_file.
+            proxy_file (str): Path to the proxy file that will be updated.
+            update_keys (List[str]): Keys in the configuration that, when updated,
+                                     trigger the proxy file to be touched.
+
+        Raises:
+            ValueError: If any of the keys in `update_keys` are already linked to another proxy file.
         """
-        for key in proxy_update_keys:
+        for key in update_keys:
             if key in self.proxy_mapping:
                 raise ValueError(
                     f"Key '{key}' is already associated with another proxy file: "
@@ -379,7 +407,7 @@ class DataHandler(ABC):
 
     def __init__(self, verbose: int = 1):
         """
-        Initialize the DataHandler.
+        Init
 
         Args:
             verbose (int): Verbosity level for logging warnings. Defaults to 1.
