@@ -1,12 +1,9 @@
 """
-This module provides routines for formatting data structures as text and parsing text back to
-data structures.  This is designed to present the data to a user for editing in a somewhat human
-friendly text format.
+This provides routines for formatting data structures as text for user editing and then parsing
+the edited text back into a data structure.
 
 - Converts data structures to text for display or editing (`to_text`).
-- Parses text representations into structured data (`parse_text`).
-- Text must be in Python/AST format
-- Validates text formats against regular expressions (`validate_format`).
+- Parses text back into structured data (`parse_text`).
 - Supports simple dict, list, and scalar (int, float, bool, etc.)
 
 """
@@ -121,7 +118,6 @@ def to_text(item, normalize=False):
         raise TypeError(f"Unsupported type: {type(item).__name__}")
 
 
-# Fallback values for when the item can't be parsed
 DEFAULT_FALLBACKS = {
     int: -9999,  # Default fallback for integers
     float: -9999.9,  # Default fallback for floats
@@ -132,6 +128,25 @@ DEFAULT_FALLBACKS = {
     list: None,  # Default fallback for lists
     tuple: None,
 }
+
+def get_default_fallbacks():
+    """
+    Retrieve the DEFAULT_FALLBACKS dictionary.
+    DEFAULT_FALLBACKS is a dictionary that provides default fallback values for
+    various data types (e.g., int, float, str) when text cannot be parsed correctly.
+
+    Defaults:
+        - `int`: -9999
+        - `float`: -9999.9
+        - `bool`: False
+        - `str`: "ERROR"
+        - `date`: datetime.date(1900, 1, 1)
+        - `dict`, `list`, `tuple`: None
+
+    Returns:
+        dict: Dictionary of fallback values for parsing failures.
+    """
+    return DEFAULT_FALLBACKS
 
 
 def parse_text(text, target_type, rgx=None, fallbacks=None):
@@ -276,9 +291,9 @@ def _parse_text(text, target_type=None, rgx=None):
         return True, None
 
 
-def rebuild_dict(txt):
+def _ast_dictionary(txt):
     """
-    Rebuild a dictionary-like string, ensuring proper formatting with quoted keys and values.
+    Create an AST formatted dictionary string, ensuring proper formatting with quoted keys and values.
 
     Args:
         txt (str): The input string containing key-value pairs in simplified dictionary-like format.
@@ -298,56 +313,63 @@ def rebuild_dict(txt):
 
     # Process the content inside the braces and build an AST dictionary string
     text_content = txt.strip("{}")  # Remove braces for processing
-    return f"{{{format_key_value_pairs(text_content)}}}"
+    return f"{{{_ast_key_value_pairs(text_content)}}}"
 
 
-def format_key_value_pairs(text):
+def _ast_key_value_pairs(text):
     """
-    Format key-value pairs by adding single quotes around keys and values.
+    Convert a simple string of key-value pairs into an AST-style formatted string.
+
+    This function takes a string containing key-value pairs separated by commas
+    (e.g., "key1: value1, key2: value2") and returns a formatted string where
+    both the keys and values are enclosed in single quotes
+    (e.g., "'key1': 'value1', 'key2': 'value2'").
 
     Args:
-        text (str): The input string of key-value pairs, separated by commas.
+        text (str): A string of key-value pairs, where each pair is separated
+                    by a comma and each key and value is separated by a colon.
                     Example: "key1: value1, key2: value2"
 
     Returns:
-        str: A string of properly formatted key-value pairs with single quotes.
+        str: A formatted string with keys and values wrapped in single quotes.
              Example: "'key1': 'value1', 'key2': 'value2'"
 
     Raises:
-        ValueError: If a key-value pair is invalid (does not contain exactly one colon).
+        ValueError: If a key-value pair does not contain exactly one colon.
 
     Notes:
-        - Strips any whitespace or surrounding quotes from keys and values.
-        - Adds single quotes around keys and values unless the value is empty (`''`),
-          in which case it remains as `''`.
-        - Processes each pair individually and joins them back into a string.
+        - Leading and trailing whitespace or quotes around keys and values are removed.
+        - If a value is empty, it is explicitly set to an empty string (`''`).
+        - Each key-value pair is processed independently, and the formatted pairs
+          are joined into a single output string.
     """
-    formatted_pairs = []
-    pairs = text.split(",")  # Split key-value pairs by commas
+    formatted_pairs = []  # List to hold formatted key-value pairs
+    pairs = text.split(",")  # Split input string into individual key-value pairs
 
     for pair in pairs:
-        key_value = pair.split(":")  # Split each pair into key and value by colon
+        key_value = pair.split(":")  # Split each pair into key and value
         if len(key_value) == 2:
             key, value = key_value
 
-            # Strip whitespace and any surrounding quotes from key and value
+            # Clean up the key and value by removing whitespace and surrounding quotes
             key = key.strip().strip("'").strip('"')
             value = value.strip().strip("'").strip('"')
 
-            # Add single quotes around key and value
+            # Enclose the cleaned key in single quotes
             key = f"'{key}'"
-            if value == "":  # Leave value as-is if it's empty
-                value = "''"
-            else:
-                value = f"'{value}'"
+
+            # Enclose the value in single quotes or set it to an empty string if blank
+            value = f"'{value}'" if value else "''"
 
             # Append the formatted key-value pair to the list
             formatted_pairs.append(f"{key}: {value}")
         else:
+            # Raise an error if the pair does not have exactly one colon
             raise ValueError(f"Invalid key-value pair: {pair.strip()}")
 
-    # Join the formatted key-value pairs into a single string
+    # Combine the formatted pairs into a single string separated by commas
     return ", ".join(formatted_pairs)
+
 
 
 def validate_text(text, regex):

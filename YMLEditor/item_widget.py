@@ -41,7 +41,7 @@ except ImportError:
     print("PyQt6 imported")
 
 
-from YMLEditor.structured_text import to_text, data_type, parse_text, rebuild_dict
+from YMLEditor.structured_text import to_text, data_type, parse_text, _ast_dictionary
 
 
 class ItemWidget(QWidget):
@@ -127,7 +127,7 @@ class ItemWidget(QWidget):
             text = text.strip()  # Remove surrounding whitespace
             try:
                 if self._data_type == dict:
-                    text = rebuild_dict(text)
+                    text = _ast_dictionary(text)
                 elif self._data_type == list:
                     # Add enclosing brackets if not present and content is non-empty
                     if text and (not text.startswith("[") or not text.endswith("]")):
