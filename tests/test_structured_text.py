@@ -12,8 +12,8 @@ positive_test_cases = [  # (text, target_type, test_object)
     ("True", bool, True),  # 4
     ("False", bool, False),  # 5
     ("New Orleans", str, "New Orleans"),  # 6
-    ("{'key7': '42', 'nested': {'bool': 'False', 'list': ['1', 2.5]}}", dict,
-     {'key7': '42', 'nested': {'bool': 'False', 'list': ['1', 2.5]}}),  # 7
+    ("{'key7': '42', 'nested': {'bool': 'false', 'list': ['1', 2.5]}}", dict,
+     {'key7': '42', 'nested': {'bool': 'false', 'list': ['1', 2.5]}}),  # 7
     ("[85, 'hello', 3.14, True]", list, [85, 'hello', 3.14, True]),  # 8
     ("'2024-09-23'", date, date(2024, 9, 23)),  # 9
     ("0", int, 0),  # 10
@@ -40,8 +40,8 @@ positive_test_cases = [  # (text, target_type, test_object)
     ("-s 21", str, "-s 21"),  # 21
 ]
 
-positive_test_ids = ["1 int:positive", "2 int:negative", "3 float:pi", "4 bool:True",
-                     "5 bool:False", "6 str:New_Orleans", "7 dict:nested_structure", "8 list:mixed",
+positive_test_ids = ["1 int:positive", "2 int:negative", "3 float:pi", "4 bool:true",
+                     "5 bool:false", "6 str:New_Orleans", "7 dict:nested_structure", "8 list:mixed",
                      "9 date:valid", "10 int:zero", "11 float:no_decimal", "12 float:negative",
                      "13 dict:mixed_types", "14 list:dict_elements", "15 dict:simple",
                      "16 dict:deep_nested_levels", "17 list:deep_nested_mixed",

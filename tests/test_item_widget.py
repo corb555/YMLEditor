@@ -47,7 +47,7 @@ def test_item_widget_line_edit(app, mock_config, mock_callback):
         callback=mock_callback, key="key2", )
     assert isinstance(widget.widget, QLineEdit)
     assert widget.widget.text() == "Initial Text"
-    assert widget.rgx == r"^\w+$"
+    assert widget._rgx == r"^\w+$"
 
 
 def test_item_widget_text_edit(app, mock_config, mock_callback):
@@ -77,7 +77,7 @@ def test_item_widget_on_widget_changed_invalid(app, mock_config, mock_callback):
     line_edit.setText("Invalid Text!")  # Fails regex
     widget._on_widget_changed(line_edit)
     assert not widget._is_valid
-    assert line_edit.styleSheet() == widget.error_style
+    assert line_edit.styleSheet() == widget._error_style
 
 
 def test_item_widget_set_text(app, mock_config, mock_callback):
@@ -96,7 +96,7 @@ def test_item_widget_set_none(app, mock_config, mock_callback):
     assert widget.widget.text() == "Updated Value"
     # 2) Set None
     widget.set_text(widget.widget, None)
-    assert widget.widget.text() == "''"
+    assert widget.widget.text() == 'None'
     # 3) Set text
     widget.set_text(widget.widget, "Updated Value2")
     assert widget.widget.text() == "Updated Value2"

@@ -105,13 +105,13 @@ class TestDataManager:
         proxy_file = "proxy_file"
         keys = ["key1", "key2"]
 
-        data_manager.add_proxy(proxy_file, keys)
+        data_manager.register_proxy_file(proxy_file, keys)
         assert data_manager._get_proxy("key1") == proxy_file
         assert data_manager._get_proxy("key2") == proxy_file
 
         # Adding duplicate key should raise ValueError
         with pytest.raises(ValueError):
-            data_manager.add_proxy(proxy_file, ["key1"])
+            data_manager.register_proxy_file(proxy_file, ["key1"])
 
     def test_delete(self, data_manager):
         """Test delete operation."""
