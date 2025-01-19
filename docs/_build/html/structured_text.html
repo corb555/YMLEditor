@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -88,7 +88,7 @@
            <div itemprop="articleBody">
              
   <section id="module-structured_text">
-<span id="structured-text-module"></span><h1>structured_text module<a class="headerlink" href="#module-structured_text" title="Link to this heading"></a></h1>
+<span id="structured-text-module"></span><h1>structured_text module<a class="headerlink" href="#module-structured_text" title="Permalink to this heading"></a></h1>
 <p>This module provides routines for formatting data structures as text and parsing text back to
 data structures.  This is designed to present the data to a user for editing in a somewhat human
 friendly text format.</p>
@@ -101,7 +101,7 @@ friendly text format.</p>
 </ul>
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.data_type">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.data_type" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.data_type" title="Permalink to this definition"></a></dt>
 <dd><p>Identifies the item’s data type (List, Dict, int, float, bool, str).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -115,7 +115,7 @@ friendly text format.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.format_key_value_pairs">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">format_key_value_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#format_key_value_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.format_key_value_pairs" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">format_key_value_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#format_key_value_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.format_key_value_pairs" title="Permalink to this definition"></a></dt>
 <dd><p>Format key-value pairs by adding single quotes around keys and values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -147,12 +147,12 @@ in which case it remains as <cite>‘’</cite>.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.info">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.info" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.info" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.parse_text">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">parse_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallbacks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#parse_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.parse_text" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">parse_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallbacks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#parse_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.parse_text" title="Permalink to this definition"></a></dt>
 <dd><p>Parse a string into a Python object (e.g., dictionary, list, scalar, or nested structure).
 The input string must be in a format compatible with Python’s <cite>ast.literal_eval</cite>.</p>
 <dl class="field-list simple">
@@ -160,7 +160,7 @@ The input string must be in a format compatible with Python’s <cite>ast.litera
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> (<em>str</em>) – The input string to parse.</p></li>
 <li><p><strong>target_type</strong> (<em>type</em>) – The desired type of the output (e.g., int, float, str, bool, date,</p></li>
-<li><p><strong>etc.</strong><strong>)</strong><strong>.</strong></p></li>
+<li><p><strong>etc.</strong><strong>)</strong><strong>.</strong> – </p></li>
 <li><p><strong>rgx</strong> – Optional parameter for additional handling.</p></li>
 <li><p><strong>fallbacks</strong> – Override default fallbacks.</p></li>
 </ul>
@@ -204,7 +204,7 @@ The input string must be in a format compatible with Python’s <cite>ast.litera
 
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.rebuild_dict">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">rebuild_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#rebuild_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.rebuild_dict" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">rebuild_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#rebuild_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.rebuild_dict" title="Permalink to this definition"></a></dt>
 <dd><p>Rebuild a dictionary-like string, ensuring proper formatting with quoted keys and values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -231,7 +231,7 @@ Example: “key1: value1, key2: value2”</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.to_text">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#to_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.to_text" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#to_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.to_text" title="Permalink to this definition"></a></dt>
 <dd><p>Converts a Python object into a string representation that is compatible with
 <cite>ast.literal_eval</cite>.
 This function handles common Python types including nested hierarchies and ensures proper
@@ -248,8 +248,8 @@ formatting for compatibility with evaluation and representation needs.</p>
 - <cite>None</cite>: Represented as the string <a href="#id1"><span class="problematic" id="id2">``</span></a>.
 - <cite>date</cite>: Converted to an ISO-formatted string enclosed in single quotes.</p></li>
 <li><p><strong>normalize</strong> (<em>bool</em>) – If <cite>True</cite>, applies normalization rules to standardize strings for</p></li>
-<li><p><strong>when</strong> (<em>certain cases.  Ensures proper escaping</em><em> of </em><em>characters in strings using repr</em>)</p></li>
-<li><p><strong>normalizing.</strong></p></li>
+<li><p><strong>when</strong> (<em>certain cases.  Ensures proper escaping</em><em> of </em><em>characters in strings using repr</em>) – </p></li>
+<li><p><strong>normalizing.</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -273,7 +273,7 @@ formatting for compatibility with evaluation and representation needs.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.validate_text">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">validate_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#validate_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.validate_text" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">validate_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#validate_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.validate_text" title="Permalink to this definition"></a></dt>
 <dd><p>Validates if a string fully matches a specified regex pattern.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -293,7 +293,7 @@ formatting for compatibility with evaluation and representation needs.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="structured_text.warn">
-<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.warn" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">structured_text.</span></span><span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/structured_text.html#warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#structured_text.warn" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>

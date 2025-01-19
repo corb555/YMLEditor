@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,9 +12,9 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -80,7 +80,7 @@
 <span class="sd">- Supports simple dict, list, and scalar (int, float, bool, etc.)</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="c1">#  Copyright (c) 2024.</span>
+<span class="c1">#   Copyright (c) 2024.</span>
 <span class="c1">#   Permission is hereby granted, free of charge, to any person obtaining a</span>
 <span class="c1">#   copy of this software and associated documentation files (the “Software”), to deal in the</span>
 <span class="c1">#   Software without restriction,</span>
@@ -88,10 +88,10 @@
 <span class="c1">#   sublicense, and/or sell copies</span>
 <span class="c1">#   of the Software, and to permit persons to whom the Software is furnished to do so, subject to</span>
 <span class="c1">#   the following conditions:</span>
-<span class="c1">#  #</span>
+<span class="c1">#</span>
 <span class="c1">#   The above copyright notice and this permission notice shall be included in all copies or</span>
 <span class="c1">#   substantial portions of the Software.</span>
-<span class="c1">#  #</span>
+<span class="c1">#</span>
 <span class="c1">#   THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING</span>
 <span class="c1">#   BUT NOT LIMITED TO THE</span>
 <span class="c1">#   WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO</span>
@@ -100,7 +100,7 @@
 <span class="c1">#   CONTRACT, TORT OR</span>
 <span class="c1">#   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER</span>
 <span class="c1">#   DEALINGS IN THE SOFTWARE.</span>
-<span class="c1">#  #</span>
+<span class="c1">#</span>
 <span class="c1">#   This uses QT for some components which has the primary open-source license is the GNU Lesser</span>
 <span class="c1">#   General Public License v. 3 (“LGPL”).</span>
 <span class="c1">#   With the LGPL license option, you can use the essential libraries and some add-on libraries</span>
@@ -112,9 +112,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 
 
-<div class="viewcode-block" id="to_text">
-<a class="viewcode-back" href="../structured_text.html#structured_text.to_text">[docs]</a>
-<span class="k">def</span> <span class="nf">to_text</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="to_text"><a class="viewcode-back" href="../structured_text.html#structured_text.to_text">[docs]</a><span class="k">def</span> <span class="nf">to_text</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a Python object into a string representation that is compatible with</span>
 <span class="sd">    `ast.literal_eval`.</span>
@@ -193,7 +191,6 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-
 <span class="c1"># Fallback values for when the item can&#39;t be parsed</span>
 <span class="n">DEFAULT_FALLBACKS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nb">int</span><span class="p">:</span> <span class="o">-</span><span class="mi">9999</span><span class="p">,</span>  <span class="c1"># Default fallback for integers</span>
@@ -207,9 +204,7 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="parse_text">
-<a class="viewcode-back" href="../structured_text.html#structured_text.parse_text">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target_type</span><span class="p">,</span> <span class="n">rgx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fallbacks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_text"><a class="viewcode-back" href="../structured_text.html#structured_text.parse_text">[docs]</a><span class="k">def</span> <span class="nf">parse_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target_type</span><span class="p">,</span> <span class="n">rgx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fallbacks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse a string into a Python object (e.g., dictionary, list, scalar, or nested structure).</span>
 <span class="sd">    The input string must be in a format compatible with Python&#39;s `ast.literal_eval`.</span>
@@ -273,7 +268,6 @@
         <span class="n">error_flag</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">return</span> <span class="n">error_flag</span><span class="p">,</span> <span class="n">value</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_parse_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rgx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -352,9 +346,7 @@
         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="rebuild_dict">
-<a class="viewcode-back" href="../structured_text.html#structured_text.rebuild_dict">[docs]</a>
-<span class="k">def</span> <span class="nf">rebuild_dict</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
+<div class="viewcode-block" id="rebuild_dict"><a class="viewcode-back" href="../structured_text.html#structured_text.rebuild_dict">[docs]</a><span class="k">def</span> <span class="nf">rebuild_dict</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Rebuild a dictionary-like string, ensuring proper formatting with quoted keys and values.</span>
 
@@ -379,10 +371,7 @@
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="si">{</span><span class="n">format_key_value_pairs</span><span class="p">(</span><span class="n">text_content</span><span class="p">)</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span></div>
 
 
-
-<div class="viewcode-block" id="format_key_value_pairs">
-<a class="viewcode-back" href="../structured_text.html#structured_text.format_key_value_pairs">[docs]</a>
-<span class="k">def</span> <span class="nf">format_key_value_pairs</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<div class="viewcode-block" id="format_key_value_pairs"><a class="viewcode-back" href="../structured_text.html#structured_text.format_key_value_pairs">[docs]</a><span class="k">def</span> <span class="nf">format_key_value_pairs</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Format key-value pairs by adding single quotes around keys and values.</span>
 
@@ -431,10 +420,7 @@
     <span class="k">return</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formatted_pairs</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="validate_text">
-<a class="viewcode-back" href="../structured_text.html#structured_text.validate_text">[docs]</a>
-<span class="k">def</span> <span class="nf">validate_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">regex</span><span class="p">):</span>
+<div class="viewcode-block" id="validate_text"><a class="viewcode-back" href="../structured_text.html#structured_text.validate_text">[docs]</a><span class="k">def</span> <span class="nf">validate_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">regex</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Validates if a string fully matches a specified regex pattern.</span>
 
@@ -446,7 +432,6 @@
 <span class="sd">        bool: True if the string matches the regex or regex is None, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span> <span class="k">if</span> <span class="n">text</span> <span class="ow">and</span> <span class="n">regex</span> <span class="k">else</span> <span class="kc">True</span></div>
-
 
 
 <span class="k">def</span> <span class="nf">_convert_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">target_type</span><span class="p">):</span>
@@ -509,9 +494,7 @@
         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="data_type">
-<a class="viewcode-back" href="../structured_text.html#structured_text.data_type">[docs]</a>
-<span class="k">def</span> <span class="nf">data_type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+<div class="viewcode-block" id="data_type"><a class="viewcode-back" href="../structured_text.html#structured_text.data_type">[docs]</a><span class="k">def</span> <span class="nf">data_type</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Identifies the item&#39;s data type (List, Dict, int, float, bool, str).</span>
 
@@ -524,19 +507,12 @@
     <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="warn">
-<a class="viewcode-back" href="../structured_text.html#structured_text.warn">[docs]</a>
-<span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<div class="viewcode-block" id="warn"><a class="viewcode-back" href="../structured_text.html#structured_text.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
 
-
-<div class="viewcode-block" id="info">
-<a class="viewcode-back" href="../structured_text.html#structured_text.info">[docs]</a>
-<span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<div class="viewcode-block" id="info"><a class="viewcode-back" href="../structured_text.html#structured_text.info">[docs]</a><span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="k">pass</span></div>
-
 </pre></div>
 
            </div>

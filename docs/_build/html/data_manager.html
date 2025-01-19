@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -63,7 +63,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.snapshots"><code class="docutils literal notranslate"><span class="pre">DataManager.snapshots</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.max_snapshots"><code class="docutils literal notranslate"><span class="pre">DataManager.max_snapshots</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.proxy_mapping"><code class="docutils literal notranslate"><span class="pre">DataManager.proxy_mapping</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.add_proxy"><code class="docutils literal notranslate"><span class="pre">DataManager.add_proxy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.verbose"><code class="docutils literal notranslate"><span class="pre">DataManager.verbose</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">DataManager._data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">DataManager.file_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">DataManager.directory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">DataManager.unsaved_changes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">DataManager.snapshots</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.handler"><code class="docutils literal notranslate"><span class="pre">DataManager.handler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">DataManager.max_snapshots</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">DataManager.proxy_mapping</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.error"><code class="docutils literal notranslate"><span class="pre">DataManager.error</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.create"><code class="docutils literal notranslate"><span class="pre">DataManager.create()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.delete"><code class="docutils literal notranslate"><span class="pre">DataManager.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.get"><code class="docutils literal notranslate"><span class="pre">DataManager.get()</span></code></a></li>
@@ -72,6 +81,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.insert"><code class="docutils literal notranslate"><span class="pre">DataManager.insert()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.items"><code class="docutils literal notranslate"><span class="pre">DataManager.items()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.load"><code class="docutils literal notranslate"><span class="pre">DataManager.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.register_proxy_file"><code class="docutils literal notranslate"><span class="pre">DataManager.register_proxy_file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.save"><code class="docutils literal notranslate"><span class="pre">DataManager.save()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.set"><code class="docutils literal notranslate"><span class="pre">DataManager.set()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#data_manager.DataManager.snapshot_push"><code class="docutils literal notranslate"><span class="pre">DataManager.snapshot_push()</span></code></a></li>
@@ -114,16 +124,22 @@
            <div itemprop="articleBody">
              
   <section id="module-data_manager">
-<span id="data-manager-module"></span><h1>data_manager module<a class="headerlink" href="#module-data_manager" title="Link to this heading"></a></h1>
+<span id="data-manager-module"></span><h1>data_manager module<a class="headerlink" href="#module-data_manager" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="data_manager.DataHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_manager.</span></span><span class="sig-name descname"><span class="pre">DataHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_manager.</span></span><span class="sig-name descname"><span class="pre">DataHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>A class for managing nested dictionary and list structures with abstract methods
 for getting, setting, and iterating over elements.</p>
+<p>Init</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>int</em>) – Verbosity level for logging warnings. Defaults to 1.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataHandler.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.delete" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.delete" title="Permalink to this definition"></a></dt>
 <dd><p>Delete an item from a dictionary or list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -144,7 +160,7 @@ for getting, setting, and iterating over elements.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataHandler.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.insert" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.insert" title="Permalink to this definition"></a></dt>
 <dd><p>Insert an item into a list at the specified index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -165,13 +181,13 @@ for getting, setting, and iterating over elements.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataHandler.items">
-<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.items" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.items" title="Permalink to this definition"></a></dt>
 <dd><p>Return an iterator over key-value or index-value pairs.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataHandler.replace_indirect">
-<span class="sig-name descname"><span class="pre">replace_indirect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.replace_indirect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.replace_indirect" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">replace_indirect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.replace_indirect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.replace_indirect" title="Permalink to this definition"></a></dt>
 <dd><p>Resolve indirect key references in a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -196,7 +212,7 @@ for getting, setting, and iterating over elements.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataHandler.warn">
-<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.warn" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/data_manager.html#DataHandler.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataHandler.warn" title="Permalink to this definition"></a></dt>
 <dd><p>Print a warning message if verbosity is enabled.</p>
 </dd></dl>
 
@@ -204,7 +220,7 @@ for getting, setting, and iterating over elements.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="data_manager.DataManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_manager.</span></span><span class="sig-name descname"><span class="pre">DataManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_manager.</span></span><span class="sig-name descname"><span class="pre">DataManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Base class for managing data, providing functions for: load, save, get, set, and
 undo.</p>
@@ -212,7 +228,7 @@ undo.</p>
 <cite>_save_data</cite>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="data_manager.DataManager._data">
-<span class="sig-name descname"><span class="pre">_data</span></span><a class="headerlink" href="#data_manager.DataManager._data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_data</span></span><a class="headerlink" href="#data_manager.DataManager._data" title="Permalink to this definition"></a></dt>
 <dd><p>The main data structure being managed (dictionary or list).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -223,7 +239,7 @@ undo.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="data_manager.DataManager.file_path">
-<span class="sig-name descname"><span class="pre">file_path</span></span><a class="headerlink" href="#data_manager.DataManager.file_path" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">file_path</span></span><a class="headerlink" href="#data_manager.DataManager.file_path" title="Permalink to this definition"></a></dt>
 <dd><p>Path to the file associated with the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -234,7 +250,7 @@ undo.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="data_manager.DataManager.directory">
-<span class="sig-name descname"><span class="pre">directory</span></span><a class="headerlink" href="#data_manager.DataManager.directory" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">directory</span></span><a class="headerlink" href="#data_manager.DataManager.directory" title="Permalink to this definition"></a></dt>
 <dd><p>Directory containing the file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -245,7 +261,7 @@ undo.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="data_manager.DataManager.unsaved_changes">
-<span class="sig-name descname"><span class="pre">unsaved_changes</span></span><a class="headerlink" href="#data_manager.DataManager.unsaved_changes" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">unsaved_changes</span></span><a class="headerlink" href="#data_manager.DataManager.unsaved_changes" title="Permalink to this definition"></a></dt>
 <dd><p>Indicates if there are unsaved changes in the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -256,7 +272,7 @@ undo.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="data_manager.DataManager.snapshots">
-<span class="sig-name descname"><span class="pre">snapshots</span></span><a class="headerlink" href="#data_manager.DataManager.snapshots" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">snapshots</span></span><a class="headerlink" href="#data_manager.DataManager.snapshots" title="Permalink to this definition"></a></dt>
 <dd><p>Stack of snapshots for supporting undo functionality.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -267,7 +283,7 @@ undo.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="data_manager.DataManager.max_snapshots">
-<span class="sig-name descname"><span class="pre">max_snapshots</span></span><a class="headerlink" href="#data_manager.DataManager.max_snapshots" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">max_snapshots</span></span><a class="headerlink" href="#data_manager.DataManager.max_snapshots" title="Permalink to this definition"></a></dt>
 <dd><p>Maximum number of snapshots retained for undo operations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -278,7 +294,7 @@ undo.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="data_manager.DataManager.proxy_mapping">
-<span class="sig-name descname"><span class="pre">proxy_mapping</span></span><a class="headerlink" href="#data_manager.DataManager.proxy_mapping" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">proxy_mapping</span></span><a class="headerlink" href="#data_manager.DataManager.proxy_mapping" title="Permalink to this definition"></a></dt>
 <dd><blockquote>
 <div><p>Maps keys to proxy files for granular build system dependencies.</p>
 <dl class="field-list simple">
@@ -290,27 +306,127 @@ undo.</p>
 <p><strong>Methods</strong>:</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="data_manager.DataManager.add_proxy">
-<span class="sig-name descname"><span class="pre">add_proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy_update_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.add_proxy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.add_proxy" title="Link to this definition"></a></dt>
-<dd><p>Add a proxy file and its associated keys.
-If any of these keys are updated, the proxy_file will be touched.
-This can be used to improve the granularity of dependencies for build management systems.
-The build system can set a dependency on the proxy_file which is only updated for a subset
-of fields in the config file rather than rebuilding from any change to the config file.</p>
+<p>Init</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>proxy_file</strong> (<em>str</em>) – The file to touch when any associated key is updated.</p></li>
-<li><p><strong>proxy_update_keys</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of keys that trigger a touch to this proxy_file.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>int</em>) – Verbosity level for logging warnings. Defaults to 1.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="data_manager.DataManager.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><a class="headerlink" href="#data_manager.DataManager.verbose" title="Permalink to this definition"></a></dt>
+<dd><p>Verbosity level for logging and debugging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">_data</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><p>Internal data structure being managed and manipulated.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">file_path</span></span><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd><p>Path to the file associated with the current data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">directory</span></span><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dd><p>Directory associated with the current data or file
+operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">unsaved_changes</span></span><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
+<dd><p>Flag to determine whether the data has unsaved
+modifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">snapshots</span></span><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dd><p>Stack of snapshots representing the stored states of the
+<cite>_data</cite> attribute for undo functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="data_manager.DataManager.handler">
+<span class="sig-name descname"><span class="pre">handler</span></span><a class="headerlink" href="#data_manager.DataManager.handler" title="Permalink to this definition"></a></dt>
+<dd><p>Handler for the specific data type, used for
+managing data operations and interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#data_manager.DataHandler" title="data_manager.DataHandler">DataHandler</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">max_snapshots</span></span><a class="headerlink" href="#id5" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum number of snapshots to retain within the
+<cite>snapshots</cite> stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">proxy_mapping</span></span><a class="headerlink" href="#id6" title="Permalink to this definition"></a></dt>
+<dd><p>Dictionary mapping keys to proxy files for certain
+data operations or file handling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="data_manager.DataManager.error">
+<span class="sig-name descname"><span class="pre">error</span></span><a class="headerlink" href="#data_manager.DataManager.error" title="Permalink to this definition"></a></dt>
+<dd><p>String representation of the last error or issue encountered
+during an operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.create">
-<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.create" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.create" title="Permalink to this definition"></a></dt>
 <dd><p>Create a new config file with the specified data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -321,7 +437,7 @@ of fields in the config file rather than rebuilding from any change to the confi
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.delete" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.delete" title="Permalink to this definition"></a></dt>
 <dd><p>Remove an item from the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -332,7 +448,7 @@ of fields in the config file rather than rebuilding from any change to the confi
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_or_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.get" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_or_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.get" title="Permalink to this definition"></a></dt>
 <dd><p>Retrieve a value from the data, returning a default if not found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -349,7 +465,7 @@ of fields in the config file rather than rebuilding from any change to the confi
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.get_open_mode">
-<span class="sig-name descname"><span class="pre">get_open_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.get_open_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.get_open_mode" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_open_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">write</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.get_open_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.get_open_mode" title="Permalink to this definition"></a></dt>
 <dd><p>Provides the file mode for the data file.
 Default is ‘w’ for write mode, ‘r’ for read mode.
 Override for binary or other modes.</p>
@@ -368,7 +484,7 @@ Override for binary or other modes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.init_data">
-<span class="sig-name descname"><span class="pre">init_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.init_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.init_data" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">init_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.init_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.init_data" title="Permalink to this definition"></a></dt>
 <dd><p>Initialize the data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -379,7 +495,7 @@ Override for binary or other modes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.insert" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.insert" title="Permalink to this definition"></a></dt>
 <dd><p>Insert a new item into the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -393,7 +509,7 @@ Override for binary or other modes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.items">
-<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.items" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.items"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.items" title="Permalink to this definition"></a></dt>
 <dd><p>Get an iterator over the items in the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -407,7 +523,7 @@ Override for binary or other modes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.load" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.load" title="Permalink to this definition"></a></dt>
 <dd><p>Load data from the specified file and initialize state.
 Create an initial snapshot for undo functionality.</p>
 <dl class="field-list simple">
@@ -431,8 +547,29 @@ Create an initial snapshot for undo functionality.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="data_manager.DataManager.register_proxy_file">
+<span class="sig-name descname"><span class="pre">register_proxy_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.register_proxy_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.register_proxy_file" title="Permalink to this definition"></a></dt>
+<dd><p>Registers a proxy file and associates it with specific configuration keys.</p>
+<p>A proxy file is updated (“touched”) when any of its associated keys are modified.
+This helps manage build dependencies by ensuring that only relevant changes
+in the configuration trigger a rebuild of dependent components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>proxy_file</strong> (<em>str</em>) – Path to the proxy file that will be updated.</p></li>
+<li><p><strong>update_keys</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Keys in the configuration that, when updated,
+trigger the proxy file to be touched.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If any of the keys in <cite>update_keys</cite> are already linked to another proxy file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.save" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.save" title="Permalink to this definition"></a></dt>
 <dd><p>Save the current data to the file if it has been modified.
 Create a snapshot of the data for undo feature.</p>
 <dl class="field-list simple">
@@ -450,7 +587,7 @@ Create a snapshot of the data for undo feature.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.set" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.set" title="Permalink to this definition"></a></dt>
 <dd><p>Update the data with a new value and touch proxy file if key in proxy list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -464,7 +601,7 @@ Create a snapshot of the data for undo feature.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.snapshot_push">
-<span class="sig-name descname"><span class="pre">snapshot_push</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.snapshot_push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.snapshot_push" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">snapshot_push</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.snapshot_push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.snapshot_push" title="Permalink to this definition"></a></dt>
 <dd><p>Push the current state of the data to snapshot stack for undo functionality.</p>
 <p>If the maximum number of snapshots is reached, the second-oldest snapshot is removed.
 The oldest is always retained for return to initial state.</p>
@@ -472,21 +609,21 @@ The oldest is always retained for return to initial state.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.snapshot_undo">
-<span class="sig-name descname"><span class="pre">snapshot_undo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.snapshot_undo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.snapshot_undo" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">snapshot_undo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.snapshot_undo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.snapshot_undo" title="Permalink to this definition"></a></dt>
 <dd><p>Restore the data to the previous state using the snapshot stack.</p>
 <p>The first snapshot remains in the stack to always allow undo to initial state.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_manager.DataManager.warn">
-<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.warn" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#DataManager.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.DataManager.warn" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="data_manager.touch_file">
-<span class="sig-prename descclassname"><span class="pre">data_manager.</span></span><span class="sig-name descname"><span class="pre">touch_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#touch_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.touch_file" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">data_manager.</span></span><span class="sig-name descname"><span class="pre">touch_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_manager.html#touch_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_manager.touch_file" title="Permalink to this definition"></a></dt>
 <dd><p>Set the file’s modification and access time to the current time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

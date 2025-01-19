@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -70,11 +70,11 @@
            <div itemprop="articleBody">
              
   <section id="ymleditor-documentation">
-<h1>YMLEditor Documentation<a class="headerlink" href="#ymleditor-documentation" title="Link to this heading"></a></h1>
+<h1>YMLEditor Documentation<a class="headerlink" href="#ymleditor-documentation" title="Permalink to this heading"></a></h1>
 <p>YMLEditor is a Python package for quickly creating simple editors for YAML configuration files. Easily create a simple app for users rather than having them use a text editor for your YAML configuration file.</p>
 </section>
 <section id="modules">
-<h1>Modules<a class="headerlink" href="#modules" title="Link to this heading"></a></h1>
+<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">YMLEditor</a><ul>
@@ -89,12 +89,141 @@
 </div>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+</section>
+<section id="readme">
+<h1>Readme<a class="headerlink" href="#readme" title="Permalink to this heading"></a></h1>
+<section id="readme">
+<h2>Readme<a class="headerlink" href="#readme" title="Permalink to this heading"></a></h2>
+<img width="622" alt="sample" src="https://github.com/corb555/YMLEditor/blob/62749ffe58806449d0adba7040e1157ae4b184c2/images/YMLEditor.png?raw=true">
+<section id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">YMLEditor</span></code> is a package for easily creating editors for simple configuration files.</p>
+</section>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h3>
+<p><strong>SettingsWidget</strong> provides a Widget for displaying and editing config file fields. You
+simply list the fields with their config key and the widget you want for each (line_edit, text_edit, etc.). You can also add a regex for data entry validation. The SettingsWiget and YamlConfig  will
+read the config file, display the fields for editing, and then save the data.</p>
+<ul class="simple">
+<li><p><strong>Easy Front-End Creation:</strong> Create a configuration editor with a few lines of code.</p></li>
+<li><p><strong>Configurable Layout:</strong> Displays settings using the format you provide.</p></li>
+<li><p><strong>Input Validation:</strong> Validates input based on supplied regular expressions and
+highlights invalid entries. In the sample above, Tip Amount is highlighted because it contains letters.</p></li>
+<li><p><strong>Data Syncing:</strong> Synchronizes data values between the UI and the config file, seamlessly using the
+ConfigFile manager described below.</p></li>
+<li><p><strong>Utilizes PyQt6</strong></p></li>
+</ul>
+<p><strong>Supported Widgets</strong></p>
+<ul class="simple">
+<li><p>text_edit - options=regex for validation</p></li>
+<li><p>line_edit - options=regex for validation</p></li>
+<li><p>read_only - a read-only line_edit</p></li>
+<li><p>combo - options=[comboBox items]</p></li>
+<li><p>checkbox</p></li>
+<li><p>spinbox - floating point spin box.  options=[min, max, step, precision]</p></li>
+<li><p>slider - options=[min, max]</p></li>
+<li><p>label</p></li>
+</ul>
+<p><strong>YamlConfig</strong> provides functionality for creating, loading, updating, and saving YAML files using PyYAML.</p>
+<ul class="simple">
+<li><p><strong>Load / Save / Create</strong> Provides interfaces to load and save YAML files and to create new YAML files.</p></li>
+<li><p><strong>Get / Set Operations:</strong> Provides simple key/value access to data fields in the YAML configuration, including
+scalars (int, float, str, bool, date), lists, and dictionaries.  <em>Complex  hierarchies are not supported.</em></p></li>
+<li><p><strong>Undo Support:</strong> Keeps a snapshot for each save <em>in session</em> and restores from stack.</p></li>
+<li><p><strong>Granular Dependency Management:</strong> For build system integration, this can be configured to touch a proxy file
+when a specified field changes, offering more granular dependency tracking for build systems.</p></li>
+</ul>
+</section>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h3>
+<p>To install <code class="docutils literal notranslate"><span class="pre">YMLEditor</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>YMLEditor
+</pre></div>
+</div>
+<section id="format-layout">
+<h4>Format Layout<a class="headerlink" href="#format-layout" title="Permalink to this heading"></a></h4>
+<p>Each line in the format corresponds to a field in the config file and contains the following:
+<code class="docutils literal notranslate"><span class="pre">ConfigKey:</span> <span class="pre">(DisplayName,</span> <span class="pre">WidgetType,</span> <span class="pre">Options,</span> <span class="pre">Width,</span> <span class="pre">&lt;style&gt;)</span></code></p>
+<ul class="simple">
+<li><p>Config Key: The name of the item in the YAML config file</p></li>
+<li><p>Display Name: The name to show in the UI.</p></li>
+<li><p>Widget Type: The type of input control (see <strong>Supported Widgets</strong> above)</p></li>
+<li><p>Options: Either a regex pattern for field validation (e.g., line_edit),
+or options for the widget</p></li>
+<li><p>Field Width: Width of the widget.</p></li>
+<li><p>Style: (optional) Contains a QT style for the widget. e.g. “color: slategray;”),</p></li>
+</ul>
+</section>
+<section id="sample-layout-format">
+<h4>Sample layout format<a class="headerlink" href="#sample-layout-format" title="Permalink to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;layout1&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;TIP&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Tip Amount&quot;</span><span class="p">,</span> <span class="s2">&quot;line_edit&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^\d{1,2}$&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+            <span class="s2">&quot;DESSERT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Dessert&quot;</span><span class="p">,</span> <span class="s2">&quot;combo&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Tiramisu&quot;</span><span class="p">,</span> <span class="s2">&quot;Apple Tart&quot;</span><span class="p">,</span> <span class="s2">&quot;Cheesecake&quot;</span><span class="p">],</span> <span class="mi">200</span><span class="p">),</span>
+            <span class="s2">&quot;HOME&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Home&quot;</span><span class="p">,</span> <span class="s2">&quot;combo&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">],</span> <span class="mi">200</span><span class="p">),</span>
+            <span class="s2">&quot;SITES.@HOME&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Preferred&quot;</span><span class="p">,</span> <span class="s2">&quot;read_only&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="s2">&quot;color: slategray;&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;SITES.B&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Location B&quot;</span><span class="p">,</span> <span class="s2">&quot;line_edit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span>
+            <span class="s2">&quot;SITES&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Sites&quot;</span><span class="p">,</span> <span class="s2">&quot;line_edit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
+            <span class="s2">&quot;BRIGHT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Brightness&quot;</span><span class="p">,</span> <span class="s2">&quot;slider&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="mi">200</span><span class="p">),</span>
+            <span class="s2">&quot;EXPERT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Expert&quot;</span><span class="p">,</span> <span class="s2">&quot;checkbox&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+            <span class="s2">&quot;VALUE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Value&quot;</span><span class="p">,</span> <span class="s2">&quot;spinbox&quot;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">200</span><span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>SITES.&#64;HOME - If ‘&#64;’ is present, that key will be looked up and replace by its contents (SITES.B in this example)</p></li>
+<li><p>SITES.B - You can access sub hierarchies by using “.” to separate keys (Boston in this example)</p></li>
+<li><p>TIP - The regex for Tips highlights entries that aren’t simply 1 or 2 digits.</p></li>
+</ul>
+</section>
+<section id="sample-yaml-file">
+<h4>Sample YAML file<a class="headerlink" href="#sample-yaml-file" title="Permalink to this heading"></a></h4>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">DESSERT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Apple Tart</span>
+<span class="nt">TIP</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">18</span>
+<span class="nt">HOME</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">A</span>
+<span class="nt">SITES</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">A</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Albany</span>
+<span class="w">  </span><span class="nt">B</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Boston</span>
+<span class="w">  </span><span class="nt">C</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Chicago</span>
+<span class="nt">BRIGHT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="nt">EXPERT</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0&#39;</span>
+<span class="nt">VALUE</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-0.3</span>
+</pre></div>
+</div>
+</section>
+<section id="sample-app">
+<h4>Sample App<a class="headerlink" href="#sample-app" title="Permalink to this heading"></a></h4>
+<p>Sample.py is provided to demonstrate the capabilities of <code class="docutils literal notranslate"><span class="pre">YMLEditor</span></code> with a sample YAML file.</p>
+</section>
+</section>
+<section id="license">
+<h3>License<a class="headerlink" href="#license" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">YMLEditor</span></code> is licensed under the MIT License. See <a class="reference internal" href="#LICENSE"><span class="xref myst">LICENSE</span></a> for details.</p>
+<p>This uses QT for some components which has the primary open-source license is the GNU Lesser General Public License v. 3 (“LGPL”).
+With the LGPL license option, you can use the essential libraries and some add-on libraries of Qt.
+See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.</p>
+</section>
+<section id="notes">
+<h3>NOTES<a class="headerlink" href="#notes" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Only basic YAML syntax is supported:</p></li>
+<li><p>Data type specification tags such as !!int, !!float, etc. are ignored</p></li>
+<li><p>Anchors and aliases are not supported</p></li>
+<li><p>Comments are stripped</p></li>
+</ul>
+</section>
+<section id="support">
+<h3>Support<a class="headerlink" href="#support" title="Permalink to this heading"></a></h3>
+<p>To report an issue, please visit the <a class="reference external" href="https://github.com/corb555/YMLEditor/issues">issue tracker</a>.</p>
+</section>
+</section>
 </section>
 
 

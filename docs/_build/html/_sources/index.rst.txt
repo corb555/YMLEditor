@@ -12,7 +12,6 @@ Modules
    :maxdepth: 2
 
    modules
-   readme.md
 
 Indices and tables
 ==================
@@ -20,3 +19,9 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+Readme
+======
+
+.. include:: readme.md
+   :parser: myst_parser.sphinx_

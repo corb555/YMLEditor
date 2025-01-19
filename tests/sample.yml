@@ -1,9 +1,10 @@
-DESSERT: Cheesecake
-TIP: 15
+DESSERT: Apple Tart
+TIP: 18
 HOME: B
 SITES:
-  A: Albany
+  A: Atlanta
   B: Boston
   C: Chicago
-  D: Daytona
-date: 1999-05-21
+BRIGHT: 1
+EXPERT: '0'
+VALUE: -0.1
