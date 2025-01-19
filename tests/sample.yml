@@ -1,10 +1,10 @@
-DESSERT: Apple Tart
-TIP: 18
-HOME: B
+DESSERT: Cheesecake
+TIP: 19
+HOME: C
 SITES:
   A: Atlanta
-  B: Boston
+  B: Baltimore
   C: Chicago
-BRIGHT: 1
-EXPERT: '0'
-VALUE: -0.1
+BRIGHT: 8
+EXPERT: '1'
+VALUE: 0.5

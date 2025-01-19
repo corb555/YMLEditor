@@ -7,24 +7,24 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../../YMLEditor'))
+# Include the project root and module paths
+sys.path.insert(0, os.path.abspath('../..'))
 
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
+# Project Information
 project = 'YMLEditor'
 
-# -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.napoleon', 'myst_parser', ]
+# Sphinx Extensions
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.napoleon',
+    'myst_parser',
+]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 autoclass_content = 'both'
 
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
+# HTML Theme
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']

@@ -9,7 +9,9 @@
 ## Features
 
 **SettingsWidget** provides a Widget for displaying and editing config file fields. You
-simply list the fields with their config key and the widget you want for each (line_edit, text_edit, etc.). You can also add a regex for data entry validation. The SettingsWiget and YamlConfig  will
+simply list the fields with their config key and the widget type you want for 
+each (line_edit, text_edit, etc.). You can also add a regex for data entry validation. 
+The SettingsWiget and YamlConfig  will
 read the config file, display the fields for editing, and then save the data.
 
 - **Easy Front-End Creation:** Create a configuration editor with a few lines of code.
@@ -80,9 +82,9 @@ formats = {
         },
     }
 ```
-- SITES.@HOME - If '@' is present, that key will be looked up and replace by its contents (SITES.B in this example)
+- SITES.@HOME - If '@' is present, that key will be looked up and replace by its contents (SITES.A in this example)
 - SITES.B - You can access sub hierarchies by using "." to separate keys (Boston in this example)
-- TIP - The regex for Tips highlights entries that aren't simply 1 or 2 digits.
+- TIP - The regex for Tips highlights entries that aren't 1 or 2 digits.
 
 ### Sample YAML file
 
@@ -112,6 +114,9 @@ Sample.py is provided to demonstrate the capabilities of `YMLEditor` with a samp
 - Data type specification tags such as !!int, !!float, etc. are ignored
 - Anchors and aliases are not supported
 - Comments are stripped
+
+## Source Code Documentation
+[Source Documentation](https://htmlpreview.github.io/?https://github.com/corb555/YMLEditor/blob/main/docs/_build/html/index.html)
 
 ## Support
 To report an issue, please visit the [issue tracker](https://github.com/corb555/YMLEditor/issues).

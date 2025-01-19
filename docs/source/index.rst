@@ -1,4 +1,3 @@
-
 YMLEditor Documentation
 ==========================
 
@@ -6,7 +5,6 @@ YMLEditor is a Python package for quickly creating simple editors for YAML confi
 
 Modules
 =======
-
 
 .. toctree::
    :maxdepth: 2
@@ -23,5 +21,5 @@ Indices and tables
 Readme
 ======
 
-.. include:: readme.md
+.. include:: ../../readme.md
    :parser: myst_parser.sphinx_
