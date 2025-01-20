@@ -60,7 +60,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     if platform.system() == "Darwin":
         style_name = "MacOs"
-        app.setStyle(QStyleFactory.create(style_name))
+        app.setStyle(style_name)
 
     # Set background color for read only fields
     # Set other widget colors to your preference here
@@ -82,12 +82,13 @@ if __name__ == "__main__":
             "TIP": ("Tip Amount", "line_edit", r'^\d{1,2}$', 50),
             "DESSERT": ("Dessert", "combo", ["Tiramisu", "Apple Tart", "Cheesecake"], 200),
             "HOME": ("Home", "combo", ["A", "B", "C", "D"], 200),
-            "SITES.@HOME": ("Preferred", "read_only", None, 180, "color: slategray;"),
+            "SITES.@HOME": ("Preferred", "read_only", None, 180, "color: slategray;font-weight: bold;"),
             "SITES.B": ("Location B", "line_edit", None, 180),
             "SITES": ("Sites", "line_edit", None, 500),
             "BRIGHT": ("Brightness", "slider", [0, 10], 200),
             "EXPERT": ("Expert", "checkbox", None, 200),
             "VALUE": ("Value", "spinbox", [-.5, 1.5, .1, 1], 200),
+            "LABEL": ("NAME", "label", None, 400),
         },
     }
 

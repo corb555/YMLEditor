@@ -104,6 +104,7 @@ class ItemWidget(QWidget):
                     val = self._config.get(key) or ""
                     if not self._data_type:
                         self._data_type = data_type(val)
+
                     self.set_text(self.widget, val)
 
         except Exception as e:
@@ -218,7 +219,7 @@ class ItemWidget(QWidget):
                 f"Options for 'combo' must be a list of strings. Got: {options}"
             )
 
-        # Widget creation logic
+        # Create Widget
         if widget_type == "combo":
             self.widget = QComboBox()
             self.widget.addItems(options)
@@ -288,8 +289,15 @@ class ItemWidget(QWidget):
 
         if isinstance(widget, QComboBox):
             widget.setCurrentText(str(data))
-        elif isinstance(widget, (QLineEdit, QTextEdit)):
-            widget.setText(str(data)) if isinstance(widget, QLineEdit) else widget.setPlainText(str(data))
+        elif isinstance(widget, QLineEdit):
+            if self._widget_type == "read_only":
+                # Remove quotes, braces, and square brackets from str(data)
+                cleaned_data = str(data).strip("[]{}").replace("'", "").replace('"', "")
+                widget.setText(cleaned_data)
+            else:
+                widget.setText(str(data))
+        elif isinstance(widget, QTextEdit):
+                widget.setPlainText(str(data))
         elif isinstance(widget, QCheckBox):
             widget.setChecked(data == '1' or data == 'True')
         elif isinstance(widget, QSlider):
