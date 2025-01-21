@@ -33,12 +33,10 @@ try:
     from PySide6.QtCore import Qt
     from PySide6.QtWidgets import QWidget, QLabel, QComboBox, QLineEdit, QSizePolicy, QTextEdit, QCheckBox, QSlider, \
         QDoubleSpinBox
-    print("PySide6 imported")
 except ImportError:
     from PyQt6.QtCore import Qt
     from PyQt6.QtWidgets import QWidget, QLabel, QComboBox, QLineEdit, QSizePolicy, QTextEdit, QCheckBox, QSlider, \
         QDoubleSpinBox
-    print("PyQt6 imported")
 
 
 from YMLEditor.structured_text import to_text, data_type, parse_text, _ast_dictionary
