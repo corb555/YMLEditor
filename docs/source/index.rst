@@ -10,6 +10,7 @@ Modules
    :maxdepth: 2
 
    modules
+   readme.md
 
 Indices and tables
 ==================

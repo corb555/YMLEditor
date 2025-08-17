@@ -4,7 +4,8 @@
 
 ## Overview
 
-`YMLEditor` is a package for easily creating editors for YAML configuration files.  
+`YMLEditor` is a package for easily creating editors for YAML configuration files.  It also provides a wrapper for reading
+and validating YAML files with clean and detailed error messages wrapped around the Cerberus Validator.
 
 ## Features
 
@@ -41,6 +42,7 @@ scalars (int, float, str, bool, date), lists, and dictionaries.  _Complex  hiera
 - **Undo Support:** Keeps a snapshot for each save _in session_ and restores from stack.
 - **Granular Dependency Management:** For build system integration, this can be configured to touch a proxy file 
 when a specified field changes, offering more granular dependency tracking for build systems.
+- **YAML schema validation** Uses Cerberus schema validator and provides a wrapper to improve error messages.
 
 ## Installation
 

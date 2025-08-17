@@ -47,13 +47,7 @@ class YamlConfig(DataManager):
     """
 
     def _load_data(self, f):
-        """
-        Load data from a YAML file
-
-        Args:
-            f (file): The file object to read from.
-        """
-        # This will load data from YAML files
+        # This will load data from a YAML file
         data = yaml.safe_load(f)
 
         # Handle case where data is None (empty file) or incorrect format
@@ -64,16 +58,7 @@ class YamlConfig(DataManager):
         return data
 
     def _save_data(self, f, data):
-        """
-        Save data in YAML format
-
-        Args:
-            f (file): The file object to write to.
-            data (dict): The modified data to save
-
-        Raises:
-            ValueError: If _data is empty
-        """
+        # Save data in YAML format
         if data:
             # Save the updated data to the file
             yaml.safe_dump(data, f, sort_keys=False, default_flow_style=False)

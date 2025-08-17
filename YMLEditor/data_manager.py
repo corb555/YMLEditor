@@ -21,7 +21,10 @@
 #
 from abc import ABC, abstractmethod
 import copy
+import shutil
+from datetime import datetime
 import os
+import fnmatch
 from typing import List, Any, Dict, Iterator, Union
 
 
@@ -45,12 +48,13 @@ class DataManager(ABC):
         **Methods**:
        """
 
-    def __init__(self, verbose=1):
+    def __init__(self, verbose=3, archive_data=False):
         """
         Init
 
         Args:
             verbose (int): Verbosity level for logging warnings. Defaults to 1.
+            archive_data (bool): If true, data copies will be stored.
 
         Attributes:
             verbose (int): Verbosity level for logging and debugging.
@@ -72,13 +76,14 @@ class DataManager(ABC):
                 during an operation.
         """
         self.verbose = verbose
+        self.archive_data = archive_data
         self._data = None
         self.file_path = None
         self.directory = None
         self.unsaved_changes = False
         self.snapshots = []  # stack to store snapshots of _data for undo
         self.handler = DataHandler(verbose)  # the handler for our data type
-        self.max_snapshots = 6  # Maximum number of snapshots to retain for undo
+        self.max_snapshots = 20  # Maximum number of snapshots to retain for undo
         self.proxy_mapping = {}  # Dictionary to map keys to proxy files
         self.error = ""
 
@@ -171,7 +176,7 @@ class DataManager(ABC):
     def save(self):
         """
         Save the current data to the file if it has been modified.
-        Create a snapshot of the data for undo feature.
+        Create an in-memory snapshot of the data for undo feature.
 
         Returns:
             bool: True if the file was saved successfully.
@@ -187,6 +192,10 @@ class DataManager(ABC):
             raise ValueError("Save Error: Data cannot be None")
 
         if self.unsaved_changes:
+            # For the first save (snapshot is empty) also create an archive file copy
+            if len(self.snapshots) == 1 and self.archive_data:
+                self.create_archive(self.file_path, "snapshots")
+
             self.snapshot_push()  # Push the current data to snapshot stack
             try:
                 with open(self.file_path, self.get_open_mode(write=True)) as f:
@@ -196,21 +205,6 @@ class DataManager(ABC):
             except Exception as e:
                 self.error = f"Error saving: {self.file_path}\n{e}"
                 return False
-
-    def set(self, key, value):
-        """
-        Update the data with a new value and touch proxy file if key in proxy list.
-
-        Args:
-            key: Key for the data.
-            value: New value to set.
-        """
-        self.unsaved_changes = True
-        self.__setitem__(key, value)
-
-        # Check if updating this key should trigger a touch to a proxy_file
-        if proxy_file := self._get_proxy(key):
-            touch_file(proxy_file)
 
     def get(self, key_or_index, default=None):
         """
@@ -225,6 +219,41 @@ class DataManager(ABC):
         """
         value = self.__getitem__(key_or_index)
         return value if value is not None else default
+
+    def create_archive(self, file_path, sub_directory=""):
+        """
+        Creates a timestamped archive of a given file in the same directory or in a specified sub-directory.
+
+        Args:
+            file_path (str): Path to the file to snapshot.
+            sub_directory (str): Optional subdirectory to save the archive in.
+
+        Returns:
+            str: Path to the snapshot file if successful, None otherwise.
+        """
+        if not os.path.isfile(file_path):
+            return None
+
+        base_dir = os.path.dirname(file_path)
+        file_name = os.path.basename(file_path)
+        name, ext = os.path.splitext(file_name)
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+
+        # Build the snapshot path
+        if sub_directory:
+            snapshot_dir = os.path.join(base_dir, sub_directory)
+            os.makedirs(snapshot_dir, exist_ok=True)
+        else:
+            snapshot_dir = base_dir
+
+        snapshot_path = os.path.join(snapshot_dir, f"{name}_{timestamp}{ext}")
+
+        try:
+            shutil.copy2(file_path, snapshot_path)
+            return snapshot_path
+        except IOError as e:
+            print(f"Error creating snapshot: {e}")
+            return None
 
     def __getitem__(self, key_or_index):
         """
@@ -344,6 +373,23 @@ class DataManager(ABC):
         self.init_data(data)
         self.save()
 
+    def set(self, key, value):
+        """
+        Update the data at key with the new value and touch proxy file if key in proxy list.
+
+        Args:
+            key: Key for the data.
+            value: New value to set.
+        """
+        self.unsaved_changes = True
+        self.__setitem__(key, value)
+
+        # Check if updating this key should trigger a touch to a proxy_file
+
+        # See if this key is in the proxy_mapping
+        if proxy_file := self._get_proxy(key):
+            touch_file(proxy_file)
+
     def register_proxy_file(self, proxy_file, update_keys):
         """
         Registers a proxy file and associates it with specific configuration keys.
@@ -355,7 +401,7 @@ class DataManager(ABC):
         Args:
             proxy_file (str): Path to the proxy file that will be updated.
             update_keys (List[str]): Keys in the configuration that, when updated,
-                                     trigger the proxy file to be touched.
+                                     trigger the proxy file to be touched.  Support wildcard keys such as A.*
 
         Raises:
             ValueError: If any of the keys in `update_keys` are already linked to another proxy file.
@@ -370,7 +416,10 @@ class DataManager(ABC):
 
     def _get_proxy(self, key):
         """
-        Retrieve the proxy file associated with a given key, if set.
+        Retrieve the proxy file associated with a given key, including wildcard-based matches.
+
+        Wildcards supported:
+            - A.* will match A.xyz, A.color, A.123 etc.
 
         Args:
             key (str): The key to look up.
@@ -378,14 +427,33 @@ class DataManager(ABC):
         Returns:
             str or None: The proxy file associated with the key, or None if not found.
         """
+        # Fill in value for keys with indirect fields (e.g. "@XYZ")
         key = self.handler.replace_indirect(self._data, key)
 
-        val = self.proxy_mapping.get(key)
-        return val
+        # Try direct match first
+        if key in self.proxy_mapping:
+            self.debug(f"Found proxy file for key '{key}'")
+            return self.proxy_mapping[key]
 
-    def warn(self, message):
-        if self.verbose > 0:
-            print(f"Warning: {message}")
+        # Fallback: match against wildcard entries
+        for pattern, proxy_file in self.proxy_mapping.items():
+            if "*" in pattern and fnmatch.fnmatch(key, pattern):
+                self.debug(f"Found proxy wildcard pattern '{pattern}' for key '{key}'")
+                return proxy_file
+
+        return None
+
+    def warn(self, text):
+        if self.verbose > 2:
+            print(f"Warning: {text}")
+
+    def info(self, text):
+        if self.verbose > 3:
+            print(f"Info: {text}")
+
+    def debug(self, text):
+        if self.verbose > 4:
+            print(f"Debug: {text}")
 
 
 def touch_file(filename):
@@ -405,12 +473,12 @@ class DataHandler(ABC):
     for getting, setting, and iterating over elements.
     """
 
-    def __init__(self, verbose: int = 1):
+    def __init__(self, verbose: int = 3):
         """
         Init
 
         Args:
-            verbose (int): Verbosity level for logging warnings. Defaults to 1.
+            verbose (int): Verbosity level for logging warnings. Defaults to 3 (WARNING).
         """
         self.verbose = verbose
 
@@ -608,5 +676,5 @@ class DataHandler(ABC):
 
     def warn(self, message: str) -> None:
         """Print a warning message if verbosity is enabled."""
-        if self.verbose > 0:
+        if self.verbose > 2:
             print(f"Warning: {message}")

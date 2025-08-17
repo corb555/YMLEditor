@@ -59,7 +59,7 @@ class SettingsWidget(QWidget):
     """
 
     def __init__(
-            self, config, formats, mode, trigger_keys=None, callback=None, verbose=0,
+            self, config, formats, mode, trigger_keys=None, callback=None, verbose=3,
             text_edit_height=60, error_style="color: orange;"
             ):
         """
@@ -71,7 +71,7 @@ class SettingsWidget(QWidget):
             mode (str): Used to select between multiple layout formats.
             trigger_keys (List[str], optional): Keys that trigger a callback or redisplay. Defaults to None.
             callback (Callable[[str, Any], None], optional): Function called when user updates any trigger key. Defaults to None.
-            verbose (int, optional): Verbosity level. Defaults to 0.
+            verbose (int, optional): Verbosity level. Defaults to 3 (warning).
             text_edit_height (int, optional): Height for text-edit fields. Defaults to 60.
             error_style (str, optional): CSS style for validation errors. Defaults to "color: orange;".
         """

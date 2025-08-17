@@ -54,7 +54,7 @@ class ItemWidget(QWidget):
 
     def __init__(
             self, config, widget_type, initial_value, combo_rgx, callback, width=50, key=None,
-            text_edit_height=60, verbose=1, error_style="color: Orange;", style=None
+            text_edit_height=60, verbose=3, error_style="color: Orange;", style=None
     ):
         """
         Init
@@ -70,8 +70,8 @@ class ItemWidget(QWidget):
             width (int, optional): Fixed width for the widget. Defaults to 50.
             key (str, optional): Key for linking the widget to the config data.
             text_edit_height (int, optional): Height for text edit widgets. Defaults to 90.
-            verbose (int, optional): Verbosity level. 0=silent, 1=warnings, 2=information.
-                Defaults to 1.
+            verbose (int, optional): Verbosity level. 0=silent, 3=warnings, 4=information.
+                Defaults to 3.
             error_style (str, optional): style for indicating an error.
             style (str) : style for the widget
         """
@@ -311,11 +311,11 @@ class ItemWidget(QWidget):
         self.widget.blockSignals(False)
 
     def warn(self, text):
-        if self._verbose > 0:
+        if self._verbose > 2:
             print(f"Warning: {text}")
 
     def info(self, text):
-        if self._verbose > 1:
+        if self._verbose > 3:
             print(f"Info: {text}")
 
 def get_text(widget):
