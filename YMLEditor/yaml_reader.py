@@ -32,37 +32,53 @@ class ConfigLoader:
     """
     def __init__(
             self, schema: Dict = None,
-            custom_rules: Optional[List[Dict]] = None,
+            error_modifications: Optional[List[Dict]] = None,
             validator_class: Type[Validator] = Validator
     ):
         """Initializes the ConfigLoader."""
         self.schema = schema
-        self.validator_class = validator_class
-        self.validator = None #validator_class(self.schema) if self.schema else None
-        self.rules = custom_rules or DEFAULT_TRANSLATION_RULES
+        self.validator = validator_class(self.schema) if self.schema else None
+
+        # Rules for text modifications in Cerberus error messages
+        self.error_modifications = error_modifications or ERROR_MODIFICATION_RULES
 
     def read(
             self,
             config_file: Path,
+            allow_unknown: bool = False,
             root_node: str | None = None,
             block_descriptor: str | None = None,
             normalize: bool = False
     ) -> dict:
         """
-        Load and validate a YAML configuration file against the schema.
+          docstring unchanged...
         """
         if not isinstance(config_file, Path):
             config_file = Path(config_file)
-
         if not config_file.exists():
-            raise FileNotFoundError(f"Configuration file '{config_file}' not found.")
+            raise FileNotFoundError(f"Configuration file not found: {Path.cwd()}/{config_file}")
 
-        self.validator = self.validator_class(self.schema) if self.schema else None
+        try:
+            with config_file.open("r", encoding="utf-8") as f:
+                yml_config = yaml.load(f, Loader=_Loader) or {}
 
-        with config_file.open("r", encoding="utf-8") as f:
-            yml_config = yaml.load(f, Loader=_Loader) or {}
+        except yaml.YAMLError as e:
+            # ---  uses the unified translation engine ---
+            raw_error = str(e)
+            problem, suggestion = self._translate_error_message(raw_error)
+
+            error_message = (
+                f"   Error: YAML syntax error in '{config_file}':\n"
+                f"    {problem}\n"
+                f"    {suggestion}\n\n"
+                f"    Details:\n{raw_error}"
+            )
+            raise ValueError(error_message) from e
 
         if self.validator:
+            # --- Set allow_unknown directly for this read operation ---
+            self.validator.allow_unknown = allow_unknown
+
             if not self.validator.validate(yml_config):
                 formatted_errors = "\n".join(self._format_yml_errors(
                     self.validator.errors,
@@ -72,7 +88,10 @@ class ConfigLoader:
                 ))
                 raise ValueError(f"  ❌ Error: Configuration file '{config_file}' has errors:\n{formatted_errors}")
 
-        return self.validator.normalized(yml_config) if normalize else yml_config
+            return self.validator.normalized(yml_config) if normalize else yml_config
+
+        # If no validator, just return the raw config
+        return yml_config
 
     def _format_yml_errors(
             self,
@@ -135,42 +154,45 @@ class ConfigLoader:
                         messages.append(formatted_message)
         return messages
 
+    def _translate_error_message(self, error_string: str) -> tuple[str, str]:
+        """
+        Translates a raw error string using the configurable translation rules.
+        """
+        for rule in self.error_modifications:
+            trigger_phrase = rule.get("trigger_phrase", "")
+            if trigger_phrase and trigger_phrase in error_string:
+                # Found a matching rule.
+                return rule["problem"], rule["suggestion"]
+
+        # Generic fallback if no specific rule matched.
+        problem = f"An unknown error occurred: {error_string}"
+        suggestion = "Please check the file syntax and the documentation."
+        return problem, suggestion
+
     def _translate_cerberus_issue(self, issue: str, path: List[str], parent_data: Any) -> tuple[str, str]:
         """
-        Translates a single Cerberus error into a human-readable message.
+        Translates a single Cerberus error, modifying text phrases and enhancing it with contextual info.
         """
         field_name = path[-1] if path else "a setting"
 
-        for rule in self.rules:
-            rule_field_name = rule.get("field_name")
-            if rule_field_name and rule_field_name != field_name:
-                continue
+        # Call the unified translator first to get the base message.
+        problem, suggestion = self._translate_error_message(issue)
 
-            trigger_phrase = rule.get("trigger_phrase", "")
-            if trigger_phrase and trigger_phrase in issue:
-                # We have a rule match. Start with the base problem and suggestion.
-                problem = rule["problem"].format(field_name=field_name)
-                suggestion = rule["suggestion"].format(field_name=field_name)
+        # Format the base message with the specific field name.
+        problem = problem.format(field_name=field_name)
+        suggestion = suggestion.format(field_name=field_name)
 
-                # If it's an "unallowed value" error, enhance the message.
-                if "unallowed value" in issue:
-                    # Find the expected allowed values from the schema.
-                    schema_rule = self._get_schema_rule_from_path(self.validator.schema, path)
-                    allowed_values_str = ""
-                    if schema_rule and 'allowed' in schema_rule:
-                        allowed_values_str = ", ".join(f"'{v}'" for v in schema_rule['allowed'])
+        # Enhance "unallowed value" errors with specific details from the schema.
+        if "unallowed value" in issue:
+            schema_rule = self._get_schema_rule_from_path(self.validator.schema, path)
+            allowed_values_str = ""
+            if schema_rule and 'allowed' in schema_rule:
+                allowed_values_str = ", ".join(f"'{v}'" for v in schema_rule['allowed'])
 
-                    # Construct a detailed problem description.
-                    if allowed_values_str:
-                        problem = f"{problem} \n   Allowed Values: {allowed_values_str}. "
-                    else:
-                        problem = f"{problem} Found invalid value."
+            if allowed_values_str:
+                found_value = issue.split("'")[1] if "'" in issue else "an invalid value"
+                problem = f"{problem} Expected: {allowed_values_str}. Found: '{found_value}'."
 
-                return problem, suggestion
-
-        # Generic fallback if no specific rule matched
-        problem = f"There is an issue with the value for '{field_name}': {issue}"
-        suggestion = "Please check the value and the documentation."
         return problem, suggestion
 
     def _get_schema_rule_from_path(self, schema: Any, path: List[str]) -> Optional[Dict]:
@@ -247,7 +269,38 @@ class ConfigLoader:
         return str(n) + suffix
 
 
-DEFAULT_TRANSLATION_RULES = [
+ERROR_MODIFICATION_RULES = [
+    # --- Rules for modifying  PYAML error text ---
+
+    {
+        "key": "YAML_INDENTATION_ERROR",
+        "trigger_phrase": "expected <block end>, but found '?'",
+        "problem": "This is a YAML indentation error.",
+        "suggestion": (
+            "Keys within a list item (like 'description:' or 'contains:') "
+            "must be indented to the same level, directly under the hyphen ('-') "
+            "that starts the list item."
+        )
+    },
+    {
+        "key": "YAML_QUOTED_SCALAR",
+        "trigger_phrase": "while scanning a quoted scalar",
+        "problem": "Invalid syntax in quoted text.",
+        "suggestion": "Please check for syntax errors inside a string, such as unescaped characters or missing end-quote."
+    },
+    {
+        "key": "YAML_QUOTED_SCALAR",
+        "trigger_phrase": "while scanning a quoted scalar",
+        "problem": "Invalid syntax in quoted text.",
+        "suggestion": "Please check for syntax errors inside a string, such as unescaped characters or missing end-quote."
+    },
+    {
+        "key": "YAML_UNEXPECTED_END",
+        "trigger_phrase": "unexpected end of stream",
+        "problem": "The file ended unexpectedly while parsing a value.",
+        "suggestion": "This is often caused by a missing closing quote (' or \") or a misplaced colon (:)."
+    },
+    # --- Rules for modifying Cerberus  error text ---
     {
         "key": "CONFIG_TYPE_MISMATCH",
         "field_name": "config_type",
