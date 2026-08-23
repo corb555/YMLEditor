@@ -25,22 +25,54 @@ def _include_constructor(loader: _Loader, node: yaml.Node) -> Dict:
 
 yaml.add_constructor('!include', _include_constructor, Loader=_Loader)
 
-
 class ConfigLoader:
     """
-    A reusable class to load, validate, and provide rich error reporting for YAML files.
+    docstring unchanged...
     """
+
     def __init__(
-            self, schema: Dict = None,
-            error_modifications: Optional[List[Dict]] = None,
-            validator_class: Type[Validator] = Validator
+        self,
+        schema: Dict = None,
+        error_modifications: Optional[List[Dict]] = None,
+        validator_class: Type[Validator] = Validator
     ):
-        """Initializes the ConfigLoader."""
         self.schema = schema
         self.validator = validator_class(self.schema) if self.schema else None
-
-        # Rules for text modifications in Cerberus error messages
         self.error_modifications = error_modifications or ERROR_MODIFICATION_RULES
+
+    @staticmethod
+    def _validate_yaml_indentation(text: str, config_file: Path) -> None:
+        """
+        Enforce project YAML indentation rules:
+
+        - tabs are not allowed;
+        - indentation must use an even number of spaces.
+        """
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            if not line.strip():
+                continue
+
+            leading_whitespace = line[:len(line) - len(line.lstrip())]
+
+            if "\t" in leading_whitespace:
+                raise ValueError(
+                    f"   Error: YAML indentation error in '{config_file}':\n"
+                    f"    Line {line_number} contains a tab in its indentation.\n"
+                    f"    Use spaces only, with indentation in multiples of 2.\n\n"
+                    f"    Details:\n"
+                    f"    {line.rstrip()}"
+                )
+
+            leading_spaces = len(leading_whitespace)
+
+            if leading_spaces % 2 != 0:
+                raise ValueError(
+                    f"   Error: YAML indentation error in '{config_file}':\n"
+                    f"    Line {line_number} uses {leading_spaces} leading spaces.\n"
+                    f"    Indentation must be in multiples of 2 spaces.\n\n"
+                    f"    Details:\n"
+                    f"    {line.rstrip()}"
+                )
 
     def read(
             self,
@@ -51,19 +83,25 @@ class ConfigLoader:
             normalize: bool = False
     ) -> dict:
         """
-          docstring unchanged...
+        docstring unchanged...
         """
         if not isinstance(config_file, Path):
             config_file = Path(config_file)
+
         if not config_file.exists():
-            raise FileNotFoundError(f"Configuration file not found: {Path.cwd()}/{config_file}")
+            raise FileNotFoundError(
+                f"Configuration file not found: {Path.cwd()}/{config_file}"
+            )
+
+        text = config_file.read_text(encoding="utf-8")
+
+        # LiteBuild/project YAML convention validation.
+        self._validate_yaml_indentation(text, config_file)
 
         try:
-            with config_file.open("r", encoding="utf-8") as f:
-                yml_config = yaml.load(f, Loader=_Loader) or {}
+            yml_config = yaml.load(text, Loader=_Loader) or {}
 
         except yaml.YAMLError as e:
-            # ---  uses the unified translation engine ---
             raw_error = str(e)
             problem, suggestion = self._translate_error_message(raw_error)
 
@@ -76,21 +114,28 @@ class ConfigLoader:
             raise ValueError(error_message) from e
 
         if self.validator:
-            # --- Set allow_unknown directly for this read operation ---
             self.validator.allow_unknown = allow_unknown
 
             if not self.validator.validate(yml_config):
-                formatted_errors = "\n".join(self._format_yml_errors(
-                    self.validator.errors,
-                    yml_config,
-                    root_node=root_node,
-                    block_descriptor=block_descriptor
-                ))
-                raise ValueError(f"  ❌ Error: Configuration file '{config_file}' has errors:\n{formatted_errors}")
+                formatted_errors = "\n".join(
+                    self._format_yml_errors(
+                        self.validator.errors,
+                        yml_config,
+                        root_node=root_node,
+                        block_descriptor=block_descriptor
+                    )
+                )
+                raise ValueError(
+                    f"  ❌ Error: Configuration file "
+                    f"'{config_file}' has errors:\n{formatted_errors}"
+                )
 
-            return self.validator.normalized(yml_config) if normalize else yml_config
+            return (
+                self.validator.normalized(yml_config)
+                if normalize
+                else yml_config
+            )
 
-        # If no validator, just return the raw config
         return yml_config
 
     def _format_yml_errors(
@@ -165,7 +210,7 @@ class ConfigLoader:
                 return rule["problem"], rule["suggestion"]
 
         # Generic fallback if no specific rule matched.
-        problem = f"An unknown error occurred: {error_string}"
+        problem = f"An  error occurred: {error_string}"
         suggestion = "Please check the file syntax and the documentation."
         return problem, suggestion
 
